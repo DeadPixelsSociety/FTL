@@ -10,6 +10,7 @@ add_definitions(-Wall -Wextra -g -O2 -std=c++11)
 add_executable(ftl
   src/ftl.cc
   src/local/Ship.cc
+  src/local/Room.cc
 )
 
 target_include_directories(ftl

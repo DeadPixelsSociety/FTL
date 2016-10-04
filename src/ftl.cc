@@ -26,6 +26,7 @@
 #include <gf/Window.h>
 
 #include "local/Params.h"
+#include "local/Room.h"
 #include "local/Ship.h"
 
 int main() {
@@ -52,6 +53,8 @@ int main() {
     gf::EntityContainer mainEntities;
     Ship ship;
     mainEntities.addEntity(ship);
+    Room room;
+    mainEntities.addEntity(room);
 
 
     gf::Clock clock;
