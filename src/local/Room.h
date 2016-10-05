@@ -25,8 +25,8 @@ class Room : public gf::Entity {
 public:
     Room(gf::Vector2f size, gf::Vector2f position);
 
-    // virtual void update(float dt);
-    virtual void render(gf::RenderTarget &target);
+    // virtual void update(float dt) override;
+    virtual void render(gf::RenderTarget &target) override;
 
 private:
     gf::Vector2i m_size;

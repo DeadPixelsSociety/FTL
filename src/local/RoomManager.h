@@ -15,15 +15,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>
 
-#ifndef LOCAL_SHIP_H
-#define LOCAL_SHIP_H
+#ifndef LOCAL_ROOM_MANAGER_H
+#define LOCAL_ROOM_MANAGER_H
+
+#include <vector>
 
 #include <gf/Entity.h>
+#include <gf/EntityContainer.h>
+#include <gf/Vector.h>
 
-class Ship : public gf::Entity {
+#include "Room.h"
+
+class RoomManager : public gf::Entity {
 public:
-    // virtual void update(float dt) override;
+    RoomManager();
+
+    void addRoom(gf::Vector2f size, gf::Vector2f position);
+
+    virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
+
+private:
+    std::vector<Room> m_rooms;
 };
 
-#endif // LOCAL_SHIP_H
+#endif // LOCAL_ROOM_MANAGER_H
