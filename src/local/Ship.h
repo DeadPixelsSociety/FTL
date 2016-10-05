@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>
 
-#ifndef LOCAL_SHIP
-#define LOCAL_SHIP
+#ifndef LOCAL_SHIP_H
+#define LOCAL_SHIP_H
 
 #include <gf/Entity.h>
 
@@ -26,4 +26,4 @@ public:
     virtual void render(gf::RenderTarget &target);
 };
 
-#endif // LOCAL_SHIP
+#endif // LOCAL_SHIP_H

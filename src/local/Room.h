@@ -15,15 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>
 
-#ifndef ROOM_H
-#define ROOM_H
+#ifndef LOCAL_ROOM_H
+#define LOCAL_ROOM_H
 
 #include <gf/Entity.h>
+#include <gf/Vector.h>
 
 class Room : public gf::Entity {
 public:
+    Room(gf::Vector2f size, gf::Vector2f position);
+
     // virtual void update(float dt);
     virtual void render(gf::RenderTarget &target);
+
+private:
+    gf::Vector2i m_size;
+    gf::Vector2i m_position;
 };
 
-#endif /* ROOM_H */
+#endif // LOCAL_ROOM_H

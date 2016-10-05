@@ -15,10 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>
 
-#ifndef LOCAL_PARAMS
-#define LOCAL_PARAMS
+#ifndef LOCAL_PARAMS_H
+#define LOCAL_PARAMS_H
 
-static constexpr unsigned GAME_WIDTH = 4096;
-static constexpr unsigned GAME_HEIGHT = 2304;
+static constexpr unsigned TILE_SIZE = 50;
 
-#endif // LOCAL_PARAMS
+static constexpr unsigned GAME_WIDTH = TILE_SIZE * 20;
+static constexpr unsigned GAME_HEIGHT = TILE_SIZE * 10;
+
+#endif // LOCAL_PARAMS_H

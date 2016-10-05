@@ -53,9 +53,36 @@ int main() {
     gf::EntityContainer mainEntities;
     Ship ship;
     mainEntities.addEntity(ship);
-    Room room;
-    mainEntities.addEntity(room);
 
+    Room room1({04, 4}, {15, 3});
+    mainEntities.addEntity(room1);
+
+    Room room2({01, 1}, {15, 2});
+    mainEntities.addEntity(room2);
+
+    Room room3({12, 1}, {03, 2});
+    mainEntities.addEntity(room3);
+
+    Room room4({02, 2}, {01, 2});
+    mainEntities.addEntity(room4);
+
+    Room room5({01, 2}, {02, 4});
+    mainEntities.addEntity(room5);
+
+    Room room6({02, 2}, {01, 6});
+    mainEntities.addEntity(room6);
+
+    Room room7({01, 1}, {15, 7});
+    mainEntities.addEntity(room7);
+
+    Room room8({12, 1}, {03, 7});
+    mainEntities.addEntity(room8);
+
+    Room room9({02, 2}, {05, 4});
+    mainEntities.addEntity(room9);
+
+    Room room10({01, 1}, {06, 3});
+    mainEntities.addEntity(room10);
 
     gf::Clock clock;
     while (window.isOpen()) {

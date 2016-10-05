@@ -22,10 +22,16 @@
 
 #include "Params.h"
 
+Room::Room(gf::Vector2f size, gf::Vector2f position)
+: m_size(size)
+, m_position(position) {
+
+}
+
 void Room::render(gf::RenderTarget &target) {
-    gf::RectangleShape sprite({GAME_WIDTH / 4.0f, GAME_HEIGHT / 4.0f});
+    gf::RectangleShape sprite(m_size * TILE_SIZE);
     sprite.setColor(gf::Color::Blue);
-    sprite.setPosition({0.0f, 0.0f});
+    sprite.setPosition(m_position * TILE_SIZE);
 
     target.draw(sprite);
 }
