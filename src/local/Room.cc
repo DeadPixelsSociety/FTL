@@ -22,16 +22,28 @@
 
 #include "Params.h"
 
-Room::Room(gf::Vector2f size, gf::Vector2f position)
+Room::Room(gf::Vector2f size, gf::Vector2f position, Crew *crew)
 : m_size(size)
-, m_position(position) {
+, m_position(position)
+, m_crew(crew) {
 
 }
 
 void Room::render(gf::RenderTarget &target) {
     gf::RectangleShape sprite(m_size * TILE_SIZE);
     sprite.setColor(gf::Color::Blue);
+    sprite.setOutlineColor(gf::Color::Black);
+    sprite.setOutlineThickness(1.0f);
     sprite.setPosition(m_position * TILE_SIZE);
 
     target.draw(sprite);
+
+    // Render the crew if present
+    if (m_crew) {
+        // Place the crew at room center
+        gf::Vector2f position(m_position * TILE_SIZE);
+        position = position + (m_size * TILE_SIZE / 2);
+        m_crew->setPosition(position);
+        m_crew->render(target);
+    }
 }

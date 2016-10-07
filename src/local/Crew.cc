@@ -15,27 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>
 
-#ifndef LOCAL_ROOM_H
-#define LOCAL_ROOM_H
-
-#include <memory>
-
-#include <gf/Entity.h>
-#include <gf/Vector.h>
-
 #include "Crew.h"
 
-class Room : public gf::Entity {
-public:
-    Room(gf::Vector2f size, gf::Vector2f position, Crew *crew = nullptr);
+#include <gf/RenderTarget.h>
+#include <gf/Shapes.h>
 
-    // virtual void update(float dt) override;
-    virtual void render(gf::RenderTarget &target) override;
+#include "Params.h"
 
-private:
-    gf::Vector2f m_size;
-    gf::Vector2f m_position;
-    std::unique_ptr<Crew> m_crew; // Crew present in Room
-};
+void Crew::setPosition(gf::Vector2f position) {
+    m_position = position;
+}
 
-#endif // LOCAL_ROOM_H
+void Crew::render(gf::RenderTarget &target) {
+    gf::CircleShape circle(TILE_SIZE / 2.0);
+    circle.setPosition(m_position - circle.getRadius());
+    circle.setColor(gf::Color::Red);
+
+    target.draw(circle);
+}

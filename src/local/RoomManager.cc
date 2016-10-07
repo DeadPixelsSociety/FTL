@@ -20,11 +20,12 @@
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
 
+#include "Crew.h"
 #include "Params.h"
 
 RoomManager::RoomManager() {
     // Add all ship's rooms
-    addRoom({04, 4}, {15, 3});
+    addRoom({04, 4}, {15, 3}, new Crew());
     addRoom({01, 1}, {15, 2});
     addRoom({12, 1}, {03, 2});
     addRoom({02, 2}, {01, 2});
@@ -36,18 +37,18 @@ RoomManager::RoomManager() {
     addRoom({01, 1}, {06, 3});
 }
 
-void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position) {
-    m_rooms.push_back(Room(size, position));
+void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position, Crew *crew) {
+    m_rooms.push_back(Room(size, position, crew));
 }
 
 void RoomManager::update(float dt) {
-    for(Room room: m_rooms) {
+    for(Room &room: m_rooms) {
         room.update(dt);
     }
 }
 
 void RoomManager::render(gf::RenderTarget &target) {
-    for(Room room: m_rooms) {
+    for(Room &room: m_rooms) {
         room.render(target);
     }
 }

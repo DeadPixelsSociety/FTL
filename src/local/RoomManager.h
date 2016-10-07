@@ -24,13 +24,14 @@
 #include <gf/EntityContainer.h>
 #include <gf/Vector.h>
 
+#include "Crew.h"
 #include "Room.h"
 
 class RoomManager : public gf::Entity {
 public:
     RoomManager();
 
-    void addRoom(gf::Vector2f size, gf::Vector2f position);
+    void addRoom(gf::Vector2f size, gf::Vector2f position, Crew *crew = nullptr);
 
     virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
