@@ -25,6 +25,7 @@
 #include <gf/Views.h>
 #include <gf/Window.h>
 
+#include "local/CrewMember.h"
 #include "local/Params.h"
 #include "local/RoomManager.h"
 #include "local/Ship.h"
@@ -56,6 +57,9 @@ int main() {
 
     RoomManager rooms;
     mainEntities.addEntity(rooms);
+    
+    CrewMember member1( {04, 4} );
+    mainEntities.addEntity(member1);
 
     gf::Clock clock;
     while (window.isOpen()) {

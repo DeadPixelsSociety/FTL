@@ -12,6 +12,7 @@ add_executable(ftl
   src/local/Room.cc
   src/local/RoomManager.cc
   src/local/Ship.cc
+  src/local/CrewMember.cc
 )
 
 target_include_directories(ftl
