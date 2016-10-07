@@ -13,6 +13,7 @@ add_executable(ftl
   src/local/Room.cc
   src/local/RoomManager.cc
   src/local/Ship.cc
+  src/local/Singletons.cc
 )
 
 target_include_directories(ftl

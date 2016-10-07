@@ -17,11 +17,16 @@
 
 #include "RoomManager.h"
 
+#include <cassert>
+
+#include <gf/Log.h>
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
 
 #include "Crew.h"
+#include "Messages.h"
 #include "Params.h"
+#include "Singletons.h"
 
 RoomManager::RoomManager() {
     // Add all ship's rooms
@@ -35,6 +40,8 @@ RoomManager::RoomManager() {
     addRoom({12, 1}, {03, 7});
     addRoom({02, 2}, {05, 4});
     addRoom({01, 1}, {06, 3});
+
+    gMessageManager().registerHandler<LeftClicMouse>(&RoomManager::onLeftClicMouse, this);
 }
 
 void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position, Crew *crew) {
@@ -51,4 +58,13 @@ void RoomManager::render(gf::RenderTarget &target) {
     for(Room &room: m_rooms) {
         room.render(target);
     }
+}
+
+gf::MessageStatus RoomManager::onLeftClicMouse(gf::Id type, gf::Message *msg){
+    assert(type == LeftClicMouse::type);
+
+    LeftClicMouse* leftClic = static_cast<LeftClicMouse*>(msg);
+    gf::Log::debug(gf::Log::General, "Event receive\n");
+    gf::Log::debug(gf::Log::General, "mouse coords = [%f, %f]\n", leftClic->position.x, leftClic->position.y);
+    return gf::MessageStatus::Keep;
 }

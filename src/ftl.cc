@@ -25,15 +25,19 @@
 #include <gf/Views.h>
 #include <gf/Window.h>
 
+#include "local/Messages.h"
 #include "local/Params.h"
 #include "local/RoomManager.h"
 #include "local/Ship.h"
+#include "local/Singletons.h"
 
 int main() {
     gf::Log::setLevel(gf::Log::Level::Debug);
 
     gf::Window window("Faster Than Lithium", { 720, 405 });
     gf::RenderWindow renderer(window);
+
+    gf::SingletonStorage<gf::MessageManager> storageForMessageManager(gMessageManager);
 
     gf::ViewContainer views;
 
@@ -50,6 +54,10 @@ int main() {
     closeWindowAction.addKeycodeKeyControl(gf::Keycode::Escape);
     actions.addAction(closeWindowAction);
 
+    // gf::Action leftClicMouse("Left clic");
+    // leftClicMouse.addMouseButtonControl(gf::MouseButton::Left);
+    // actions.addAction(leftClicMouse);
+
     gf::EntityContainer mainEntities;
     Ship ship;
     mainEntities.addEntity(ship);
@@ -65,11 +73,28 @@ int main() {
         while (window.pollEvent(event)) {
             actions.update(event);
             views.update(event);
+
+            switch(event.type) {
+            case gf::EventType::MouseButtonReleased:
+                LeftClicMouse message;
+                message.position = renderer.mapPixelToCoords(event.mouseButton.coords, mainView);
+                gMessageManager().sendMessage(&message);
+                break;
+
+            // default:
+            //     break;
+            }
         }
 
         if (closeWindowAction.isActive()) {
             window.close();
         }
+
+        // if (leftClicMouse.isActive()) {
+        //     LeftClicMouse message;
+        //     messa
+        //     gMessageManager().sendMessage();
+        // }
 
         // update
         auto dt = clock.restart().asSeconds();

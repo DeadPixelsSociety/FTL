@@ -15,32 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>
 
-#ifndef LOCAL_ROOM_MANAGER_H
-#define LOCAL_ROOM_MANAGER_H
+#ifndef LOCAL_MESSAGES_H
+#define LOCAL_MESSAGES_H
 
-#include <vector>
-
-#include <gf/Entity.h>
-#include <gf/EntityContainer.h>
 #include <gf/Message.h>
-#include <gf/Vector.h>
 
-#include "Crew.h"
-#include "Room.h"
 
-class RoomManager : public gf::Entity {
-public:
-    RoomManager();
-
-    void addRoom(gf::Vector2f size, gf::Vector2f position, Crew *crew = nullptr);
-
-    virtual void update(float dt) override;
-    virtual void render(gf::RenderTarget &target) override;
-
-    gf::MessageStatus onLeftClicMouse(gf::Id type, gf::Message *msg);
-
-private:
-    std::vector<Room> m_rooms;
+struct LeftClicMouse : public gf::Message {
+  static const gf::Id type = "LeftClicMouse"_id; // compile-time definition
+  gf::Vector2f position;
 };
 
-#endif // LOCAL_ROOM_MANAGER_H
+#endif // LOCAL_MESSAGES_H
