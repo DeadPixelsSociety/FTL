@@ -34,18 +34,19 @@
 int main() {
     gf::Log::setLevel(gf::Log::Level::Debug);
 
-    gf::Window window("Faster Than Lithium", { 720, 405 });
+    gf::Window window("Faster Than Lithium", { INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT });
     gf::RenderWindow renderer(window);
 
     gf::SingletonStorage<gf::MessageManager> storageForMessageManager(gMessageManager);
 
     gf::ViewContainer views;
 
-    gf::FitView mainView;
     gf::ExtendView shipView;
     shipView.setSize({ GAME_WIDTH, GAME_HEIGHT });
     shipView.setCenter({ GAME_WIDTH/2.0f, GAME_HEIGHT/2.0f });
     views.addView(shipView);
+
+    views.onScreenResize({ INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT });
 
     gf::ActionContainer actions;
 
@@ -53,10 +54,6 @@ int main() {
     closeWindowAction.addCloseControl();
     closeWindowAction.addKeycodeKeyControl(gf::Keycode::Escape);
     actions.addAction(closeWindowAction);
-
-    // gf::Action leftClicMouse("Left clic");
-    // leftClicMouse.addMouseButtonControl(gf::MouseButton::Left);
-    // actions.addAction(leftClicMouse);
 
     gf::EntityContainer mainEntities;
     Ship ship;
@@ -77,7 +74,7 @@ int main() {
             switch(event.type) {
             case gf::EventType::MouseButtonReleased:
                 LeftClicMouse message;
-                message.position = renderer.mapPixelToCoords(event.mouseButton.coords, mainView);
+                message.position = renderer.mapPixelToCoords(event.mouseButton.coords, shipView);
                 gMessageManager().sendMessage(&message);
                 break;
 
@@ -89,12 +86,6 @@ int main() {
         if (closeWindowAction.isActive()) {
             window.close();
         }
-
-        // if (leftClicMouse.isActive()) {
-        //     LeftClicMouse message;
-        //     messa
-        //     gMessageManager().sendMessage();
-        // }
 
         // update
         auto dt = clock.restart().asSeconds();
