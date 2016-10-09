@@ -29,6 +29,26 @@ Room::Room(gf::Vector2f size, gf::Vector2f position, Crew *crew)
 
 }
 
+bool Room::isHit(gf::Vector2f point) const {
+    // If a crew is present
+    gf::Vector2f cornerTopLeft = m_position * TILE_SIZE;
+    gf::Vector2f cornerBottomRight = cornerTopLeft + m_size * TILE_SIZE;
+    if (cornerTopLeft.x < point.x && cornerBottomRight.x > point.x &&
+        cornerTopLeft.y < point.y && cornerBottomRight.y > point.y) {
+        return true;
+    }
+
+    return false;
+}
+
+bool Room::hasCrew() const {
+    return static_cast<bool>(m_crew);
+}
+
+void Room::crewMoveTo(Room &room) {
+    room.m_crew = std::move(m_crew);
+}
+
 void Room::render(gf::RenderTarget &target) {
     gf::RectangleShape sprite(m_size * TILE_SIZE);
     sprite.setColor(gf::Color::Blue);

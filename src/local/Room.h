@@ -29,6 +29,11 @@ class Room : public gf::Entity {
 public:
     Room(gf::Vector2f size, gf::Vector2f position, Crew *crew = nullptr);
 
+    bool isHit(gf::Vector2f point) const;
+    bool hasCrew() const;
+
+    void crewMoveTo(Room &room);
+
     // virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
 

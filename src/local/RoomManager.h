@@ -41,6 +41,7 @@ public:
 
 private:
     std::vector<Room> m_rooms;
+    Room *m_roomStartMove;
 };
 
 #endif // LOCAL_ROOM_MANAGER_H

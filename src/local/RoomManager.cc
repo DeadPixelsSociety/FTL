@@ -28,7 +28,8 @@
 #include "Params.h"
 #include "Singletons.h"
 
-RoomManager::RoomManager() {
+RoomManager::RoomManager()
+: m_roomStartMove(nullptr){
     // Add all ship's rooms
     addRoom({04, 4}, {15, 3}, new Crew());
     addRoom({01, 1}, {15, 2});
@@ -66,5 +67,20 @@ gf::MessageStatus RoomManager::onLeftClicMouse(gf::Id type, gf::Message *msg){
     LeftClicMouse* leftClic = static_cast<LeftClicMouse*>(msg);
     gf::Log::debug(gf::Log::General, "Event receive\n");
     gf::Log::debug(gf::Log::General, "mouse coords = [%f, %f]\n", leftClic->position.x, leftClic->position.y);
+
+    for(Room &room: m_rooms) {
+        if (room.isHit(leftClic->position)) {
+            gf::Log::debug(gf::Log::General, "Room hited\n");
+            // If is the first clic
+            if (m_roomStartMove == nullptr) {
+                m_roomStartMove = &room;
+            }
+            // Else we do the move
+            else {
+                m_roomStartMove->crewMoveTo(room);
+                m_roomStartMove = nullptr;
+            }
+        }
+    }
     return gf::MessageStatus::Keep;
 }
