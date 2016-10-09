@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 find_package(gf REQUIRED)
+include(GNUInstallDirs)
 
 add_definitions(-Wall -Wextra -g -O2 -std=c++11)
 
