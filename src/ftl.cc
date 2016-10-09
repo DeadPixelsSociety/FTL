@@ -73,9 +73,11 @@ int main() {
 
             switch(event.type) {
             case gf::EventType::MouseButtonReleased:
-                LeftClicMouse message;
-                message.position = renderer.mapPixelToCoords(event.mouseButton.coords, shipView);
-                gMessageManager().sendMessage(&message);
+                if (event.mouseButton.button == gf::MouseButton::Left) {
+                    LeftClicMouse message;
+                    message.position = renderer.mapPixelToCoords(event.mouseButton.coords, shipView);
+                    gMessageManager().sendMessage(&message);
+                }
                 break;
 
             // default:
