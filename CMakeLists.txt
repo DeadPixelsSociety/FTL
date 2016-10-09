@@ -1,25 +1,22 @@
 cmake_minimum_required(VERSION 3.0)
 
-#set(GF_2048_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/gf_2048")
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
-
 find_package(gf REQUIRED)
 
 add_definitions(-Wall -Wextra -g -O2 -std=c++11)
 
 add_executable(ftl
-  src/ftl.cc
-  src/local/Crew.cc
-  src/local/Room.cc
-  src/local/RoomManager.cc
-  src/local/Ship.cc
-  src/local/Singletons.cc
+    src/ftl.cc
+    src/local/Crew.cc
+    src/local/Room.cc
+    src/local/RoomManager.cc
+    src/local/Ship.cc
+    src/local/Singletons.cc
 )
 
 target_include_directories(ftl
-  PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_BINARY_DIR}
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(ftl
@@ -27,6 +24,11 @@ target_link_libraries(ftl
 )
 
 install(
-  TARGETS ftl
-  RUNTIME DESTINATION games
+    TARGETS ftl
+    RUNTIME DESTINATION games
+)
+
+install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/data/ftl"
+    DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/games"
 )

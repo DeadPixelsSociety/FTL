@@ -26,4 +26,8 @@ struct LeftClicMouse : public gf::Message {
   gf::Vector2f position;
 };
 
+struct RightClicMouse : public gf::Message {
+  static const gf::Id type = "RightClicMouse"_id; // compile-time definition
+};
+
 #endif // LOCAL_MESSAGES_H

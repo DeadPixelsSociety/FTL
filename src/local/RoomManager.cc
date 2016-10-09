@@ -32,17 +32,16 @@ RoomManager::RoomManager()
 : m_roomStartMove(nullptr){
     // Add all ship's rooms
     addRoom({04, 4}, {15, 3}, new Crew());
-    addRoom({01, 1}, {15, 2});
-    addRoom({12, 1}, {03, 2});
+    addRoom({13, 1}, {03, 2});
     addRoom({02, 2}, {01, 2});
     addRoom({01, 2}, {02, 4});
     addRoom({02, 2}, {01, 6});
-    addRoom({01, 1}, {15, 7});
-    addRoom({12, 1}, {03, 7});
+    addRoom({13, 1}, {03, 7});
     addRoom({02, 2}, {05, 4});
     addRoom({01, 1}, {06, 3});
 
     gMessageManager().registerHandler<LeftClicMouse>(&RoomManager::onLeftClicMouse, this);
+    gMessageManager().registerHandler<RightClicMouse>(&RoomManager::onRightClicMouse, this);
 }
 
 void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position, Crew *crew) {
@@ -63,24 +62,32 @@ void RoomManager::render(gf::RenderTarget &target) {
 
 gf::MessageStatus RoomManager::onLeftClicMouse(gf::Id type, gf::Message *msg){
     assert(type == LeftClicMouse::type);
-
     LeftClicMouse* leftClic = static_cast<LeftClicMouse*>(msg);
-    gf::Log::debug(gf::Log::General, "Event receive\n");
-    gf::Log::debug(gf::Log::General, "mouse coords = [%f, %f]\n", leftClic->position.x, leftClic->position.y);
 
     for(Room &room: m_rooms) {
         if (room.isHit(leftClic->position)) {
-            gf::Log::debug(gf::Log::General, "Room hited\n");
             // If is the first clic
-            if (m_roomStartMove == nullptr) {
+            if (m_roomStartMove == nullptr && room.hasCrew()) {
+                gf::Log::debug(gf::Log::General, "Room hited 1\n");
                 m_roomStartMove = &room;
             }
             // Else we do the move
-            else {
+            else if (m_roomStartMove != nullptr) {
+                gf::Log::debug(gf::Log::General, "Room hited 2\n");
                 m_roomStartMove->crewMoveTo(room);
                 m_roomStartMove = nullptr;
             }
         }
     }
+    return gf::MessageStatus::Keep;
+}
+
+gf::MessageStatus RoomManager::onRightClicMouse(gf::Id type, gf::Message *msg){
+    UNUSED(msg);
+    assert(type == RightClicMouse::type);
+
+    m_roomStartMove = nullptr;
+    gf::Log::debug(gf::Log::General, "Room Released\n");
+
     return gf::MessageStatus::Keep;
 }

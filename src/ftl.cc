@@ -78,6 +78,10 @@ int main() {
                     message.position = renderer.mapPixelToCoords(event.mouseButton.coords, shipView);
                     gMessageManager().sendMessage(&message);
                 }
+                else if (event.mouseButton.button == gf::MouseButton::Right) {
+                    RightClicMouse message;
+                    gMessageManager().sendMessage(&message);
+                }
                 break;
 
             // default:

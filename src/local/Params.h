@@ -26,4 +26,6 @@ static constexpr unsigned INITIAL_WINDOW_HEIGHT = 405;
 static constexpr unsigned GAME_WIDTH = TILE_SIZE * 20;
 static constexpr unsigned GAME_HEIGHT = TILE_SIZE * 10;
 
+#define UNUSED(x) (void)(x)
+
 #endif // LOCAL_PARAMS_H
