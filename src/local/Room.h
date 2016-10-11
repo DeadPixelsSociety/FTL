@@ -34,7 +34,6 @@ public:
     bool hasCrew() const;
 
     void crewMoveTo(Room &room);
-    void setSprite(const std::string &path);
 
     // virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;

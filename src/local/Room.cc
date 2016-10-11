@@ -51,13 +51,6 @@ void Room::crewMoveTo(Room &room) {
     room.m_crew = std::move(m_crew);
 }
 
-void Room::setSprite(const std::string &path) {
-    gf::Texture texture;
-    texture.loadFromFile(path);
-    
-    m_sprite.setTexture(texture);
-}
-
 void Room::render(gf::RenderTarget &target) {
     gf::Sprite sprite;
     sprite.setTexture(m_texture);
