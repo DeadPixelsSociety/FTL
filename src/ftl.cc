@@ -89,8 +89,8 @@ int main() {
                 }
                 break;
 
-            // default:
-            //     break;
+            default:
+                break;
             }
         }
 
