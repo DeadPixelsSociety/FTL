@@ -19,6 +19,7 @@
 
 #include <gf/RenderTarget.h>
 #include <gf/Sprite.h>
+#include <gf/Log.h>
 
 #include "Params.h"
 #include "Singletons.h"
@@ -53,10 +54,13 @@ void Room::crewMoveTo(Room &room) {
 
 void Room::render(gf::RenderTarget &target) {
     gf::Sprite sprite;
+    gf::Vector2f realSize = m_size * TILE_SIZE * 10.0f;
+    gf::Log::debug(gf::Log::General, "m_size = {%f, %f}\n", m_size.x, m_size.y);
     sprite.setTexture(m_texture);
     //sprite.setTextureRect({ 1.0f, 1.0f, 1.0f, 1.0f });
-    //sprite.setScale({0.1f, 0.1f});
+    sprite.setScale((m_size * TILE_SIZE) / realSize);
     sprite.setPosition(m_position * TILE_SIZE);
+    
 
     target.draw(sprite);
 
