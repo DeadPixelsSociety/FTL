@@ -21,18 +21,20 @@
 #include <memory>
 
 #include <gf/Entity.h>
+#include <gf/Sprite.h>
 #include <gf/Vector.h>
 
 #include "Crew.h"
 
 class Room : public gf::Entity {
 public:
-    Room(gf::Vector2f size, gf::Vector2f position, Crew *crew = nullptr);
+    Room(gf::Vector2f size, gf::Vector2f position, const std::string &texturePath, Crew *crew = nullptr);
 
     bool isHit(gf::Vector2f point) const;
     bool hasCrew() const;
 
     void crewMoveTo(Room &room);
+    void setSprite(const std::string &path);
 
     // virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
@@ -41,6 +43,7 @@ private:
     gf::Vector2f m_size;
     gf::Vector2f m_position;
     std::unique_ptr<Crew> m_crew; // Crew present in Room
+    gf::Sprite m_sprite;
 };
 
 #endif // LOCAL_ROOM_H

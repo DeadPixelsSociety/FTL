@@ -22,11 +22,11 @@
 
 #include "Params.h"
 
-Room::Room(gf::Vector2f size, gf::Vector2f position, Crew *crew)
+Room::Room(gf::Vector2f size, gf::Vector2f position, const std::string &texturePath, Crew *crew)
 : m_size(size)
 , m_position(position)
 , m_crew(crew) {
-
+    setSprite(texturePath);
 }
 
 bool Room::isHit(gf::Vector2f point) const {
@@ -49,14 +49,26 @@ void Room::crewMoveTo(Room &room) {
     room.m_crew = std::move(m_crew);
 }
 
-void Room::render(gf::RenderTarget &target) {
-    gf::RectangleShape sprite(m_size * TILE_SIZE);
-    sprite.setColor(gf::Color::Blue);
-    sprite.setOutlineColor(gf::Color::Black);
-    sprite.setOutlineThickness(1.0f);
-    sprite.setPosition(m_position * TILE_SIZE);
+void Room::setSprite(const std::string &path) {
+    gf::Texture texture;
+    texture.loadFromFile(path);
+    
+    m_sprite.setTexture(texture);
+}
 
-    target.draw(sprite);
+void Room::render(gf::RenderTarget &target) {
+    if(m_sprite.getTexture() != nullptr) {
+        m_sprite.setPosition(m_position * TILE_SIZE);
+        target.draw(m_sprite);
+    } else {
+        gf::RectangleShape sprite(m_size * TILE_SIZE);
+        sprite.setColor(gf::Color::Blue);
+        sprite.setOutlineColor(gf::Color::Black);
+        sprite.setOutlineThickness(1.0f);
+        sprite.setPosition(m_position * TILE_SIZE);
+
+        target.draw(sprite);
+    }
 
     // Render the crew if present
     if (m_crew) {
