@@ -21,13 +21,14 @@
 #include <memory>
 
 #include <gf/Entity.h>
+#include <gf/Texture.h>
 #include <gf/Vector.h>
 
 #include "Crew.h"
 
 class Room : public gf::Entity {
 public:
-    Room(gf::Vector2f size, gf::Vector2f position, Crew *crew = nullptr);
+    Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew = nullptr);
 
     bool isHit(gf::Vector2f point) const;
     bool hasCrew() const;
@@ -41,6 +42,7 @@ private:
     gf::Vector2f m_size;
     gf::Vector2f m_position;
     std::unique_ptr<Crew> m_crew; // Crew present in Room
+    gf::Texture &m_texture;
 };
 
 #endif // LOCAL_ROOM_H

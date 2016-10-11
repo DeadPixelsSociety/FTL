@@ -31,21 +31,21 @@
 RoomManager::RoomManager()
 : m_roomStartMove(nullptr){
     // Add all ship's rooms
-    addRoom({04, 4}, {15, 3}, new Crew());
-    addRoom({13, 1}, {03, 2});
-    addRoom({02, 2}, {01, 2});
-    addRoom({01, 2}, {02, 4});
-    addRoom({02, 2}, {01, 6});
-    addRoom({13, 1}, {03, 7});
-    addRoom({02, 2}, {05, 4});
-    addRoom({01, 1}, {06, 3});
+    addRoom({04, 4}, {15, 3}, "cockpit.png", new Crew());
+    addRoom({13, 1}, {03, 2}, "cockpit.png");
+    addRoom({02, 2}, {01, 2}, "cockpit.png");
+    addRoom({01, 2}, {02, 4}, "cockpit.png");
+    addRoom({02, 2}, {01, 6}, "cockpit.png");
+    addRoom({13, 1}, {03, 7}, "cockpit.png");
+    addRoom({02, 2}, {05, 4}, "cockpit.png");
+    addRoom({01, 1}, {06, 3}, "cockpit.png");
 
     gMessageManager().registerHandler<LeftClicMouse>(&RoomManager::onLeftClicMouse, this);
     gMessageManager().registerHandler<RightClicMouse>(&RoomManager::onRightClicMouse, this);
 }
 
-void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position, Crew *crew) {
-    m_rooms.push_back(Room(size, position, crew));
+void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew) {
+    m_rooms.push_back(Room(size, position, path, crew));
 }
 
 void RoomManager::update(float dt) {
