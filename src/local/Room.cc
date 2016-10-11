@@ -55,11 +55,9 @@ void Room::crewMoveTo(Room &room) {
 
 void Room::render(gf::RenderTarget &target) {
     gf::Sprite sprite;
-    // gf::Log::debug(gf::Log::General, "m_size = {%f, %f}\n", m_size.x, m_size.y);
     sprite.setTexture(m_texture);
     gf::Vector2u textureSize = m_texture.getSize() / (m_texture.getSize() / 100);
     gf::Vector2f realSize = (float)TILE_SIZE / textureSize / 2;
-    gf::Log::debug(gf::Log::General, "sizei = {%f, %f}\n", realSize.x, realSize.y);
     
     sprite.setOrigin(m_origin);
     sprite.setScale(realSize);
