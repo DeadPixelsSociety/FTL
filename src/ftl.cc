@@ -31,6 +31,8 @@
 #include "local/Ship.h"
 #include "local/Singletons.h"
 
+#include "config.h"
+
 int main() {
     gf::Log::setLevel(gf::Log::Level::Debug);
 
@@ -38,6 +40,9 @@ int main() {
     gf::RenderWindow renderer(window);
 
     gf::SingletonStorage<gf::MessageManager> storageForMessageManager(gMessageManager);
+    gf::SingletonStorage<gf::ResourceManager> storageForResourceManager(gResourceManager);
+
+    gResourceManager().addSearchDir(FTL_DATA_DIR);
 
     gf::ViewContainer views;
 

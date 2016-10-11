@@ -18,3 +18,4 @@
 #include "Singletons.h"
 
 gf::Singleton<gf::MessageManager> gMessageManager;
+gf::Singleton<gf::ResourceManager> gResourceManager;

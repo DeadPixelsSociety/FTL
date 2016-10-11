@@ -31,20 +31,20 @@
 RoomManager::RoomManager()
 : m_roomStartMove(nullptr){
     // Add all ship's rooms
-    addRoom({04, 4}, {15, 3}, "../data/ftl/salle_verte.png", new Crew());
-    addRoom({13, 1}, {03, 2}, "../data/ftl/couloir_haut.png");
-    addRoom({02, 2}, {01, 2}, "../data/ftl/salle_orange_haut.png");
-    addRoom({01, 2}, {02, 4}, "../data/ftl/couloir_gauche.png", new Crew());
-    addRoom({02, 2}, {01, 6}, "../data/ftl/salle_orange_bas.png");
-    addRoom({13, 1}, {03, 7}, "../data/ftl/couloir_bas.png");
-    addRoom({02, 2}, {05, 4}, "../data/ftl/salle_bleu.png");
-    addRoom({01, 1}, {06, 3}, "../data/ftl/petit_couloir_haut.png");
+    addRoom({04, 4}, {15, 3}, "salle_verte.png", new Crew());
+    addRoom({13, 1}, {03, 2}, "couloir_haut.png");
+    addRoom({02, 2}, {01, 2}, "salle_orange_haut.png");
+    addRoom({01, 2}, {02, 4}, "couloir_gauche.png", new Crew());
+    addRoom({02, 2}, {01, 6}, "salle_orange_bas.png");
+    addRoom({13, 1}, {03, 7}, "couloir_bas.png");
+    addRoom({02, 2}, {05, 4}, "salle_bleu.png");
+    addRoom({01, 1}, {06, 3}, "petit_couloir_haut.png");
 
     gMessageManager().registerHandler<LeftClicMouse>(&RoomManager::onLeftClicMouse, this);
     gMessageManager().registerHandler<RightClicMouse>(&RoomManager::onRightClicMouse, this);
 }
 
-void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position, const std::string &path, Crew *crew) {
+void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew) {
     m_rooms.push_back(Room(size, position, path, crew));
 }
 

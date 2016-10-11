@@ -1,0 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define FTL_DATA_DIR "@FTL_DATA_DIR@"
+
+#endif // CONFIG_H

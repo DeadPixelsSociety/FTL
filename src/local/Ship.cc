@@ -23,9 +23,9 @@
 #include "local/Params.h"
 
 void Ship::render(gf::RenderTarget &target) {
-    gf::RectangleShape sprite({GAME_WIDTH, GAME_HEIGHT});
+    /*gf::RectangleShape sprite({GAME_WIDTH, GAME_HEIGHT});
     sprite.setColor(gf::Color::Green);
     sprite.setPosition({0.0f, 0.0f});
 
-    target.draw(sprite);
+    target.draw(sprite);*/
 }

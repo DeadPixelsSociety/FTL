@@ -18,15 +18,17 @@
 #include "Room.h"
 
 #include <gf/RenderTarget.h>
-#include <gf/Shapes.h>
+#include <gf/Sprite.h>
 
 #include "Params.h"
+#include "Singletons.h"
 
-Room::Room(gf::Vector2f size, gf::Vector2f position, const std::string &texturePath, Crew *crew)
+Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew)
 : m_size(size)
 , m_position(position)
-, m_crew(crew) {
-    setSprite(texturePath);
+, m_crew(crew)
+, m_texture(gResourceManager().getTexture(path)) {
+
 }
 
 bool Room::isHit(gf::Vector2f point) const {
@@ -57,18 +59,13 @@ void Room::setSprite(const std::string &path) {
 }
 
 void Room::render(gf::RenderTarget &target) {
-    if(m_sprite.getTexture() != nullptr) {
-        m_sprite.setPosition(m_position * TILE_SIZE);
-        target.draw(m_sprite);
-    } else {
-        gf::RectangleShape sprite(m_size * TILE_SIZE);
-        sprite.setColor(gf::Color::Blue);
-        sprite.setOutlineColor(gf::Color::Black);
-        sprite.setOutlineThickness(1.0f);
-        sprite.setPosition(m_position * TILE_SIZE);
+    gf::Sprite sprite;
+    sprite.setTexture(m_texture);
+    //sprite.setTextureRect({ 1.0f, 1.0f, 1.0f, 1.0f });
+    sprite.setScale({0.1f, 0.1f});
+    sprite.setPosition(m_position * TILE_SIZE);
 
-        target.draw(sprite);
-    }
+    target.draw(sprite);
 
     // Render the crew if present
     if (m_crew) {
