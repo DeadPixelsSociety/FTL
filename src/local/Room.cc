@@ -55,7 +55,7 @@ void Room::render(gf::RenderTarget &target) {
     gf::Sprite sprite;
     sprite.setTexture(m_texture);
     //sprite.setTextureRect({ 1.0f, 1.0f, 1.0f, 1.0f });
-    sprite.setScale({0.1f, 0.1f});
+    //sprite.setScale({0.1f, 0.1f});
     sprite.setPosition(m_position * TILE_SIZE);
 
     target.draw(sprite);
