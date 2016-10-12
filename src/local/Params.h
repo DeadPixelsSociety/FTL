@@ -19,6 +19,7 @@
 #define LOCAL_PARAMS_H
 
 static constexpr unsigned TILE_SIZE = 50;
+static constexpr unsigned TILE_SPRITE_SIZE = 100;
 
 static constexpr unsigned INITIAL_WINDOW_WIDTH = 720;
 static constexpr unsigned INITIAL_WINDOW_HEIGHT = 405;

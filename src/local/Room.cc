@@ -24,10 +24,9 @@
 #include "Params.h"
 #include "Singletons.h"
 
-Room::Room(gf::Vector2f size, gf::Vector2f position, gf::Vector2u origin, const gf::Path &path, Crew *crew)
+Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew)
 : m_size(size)
 , m_position(position)
-, m_origin(origin)
 , m_crew(crew)
 , m_texture(gResourceManager().getTexture(path)) {
 
@@ -55,13 +54,19 @@ void Room::crewMoveTo(Room &room) {
 
 void Room::render(gf::RenderTarget &target) {
     gf::Sprite sprite;
+
+    // sprite.setTexture(m_texture);
+    // gf::Vector2u textureSize = m_texture.getSize() / (m_texture.getSize() / 100);
+    // gf::Vector2f realSize = (float)TILE_SIZE / textureSize / 2;
+
+    // sprite.setOrigin(m_origin);
+    // sprite.setScale(realSize);
+
+    gf::Vector2f realSize = (m_size + 1.0f) * TILE_SPRITE_SIZE;
+    gf::Vector2f worldSize = (m_size + 1.0f) * TILE_SIZE;
     sprite.setTexture(m_texture);
-    gf::Vector2u textureSize = m_texture.getSize() / (m_texture.getSize() / 100);
-    gf::Vector2f realSize = (float)TILE_SIZE / textureSize / 2;
-    
-    sprite.setOrigin(m_origin);
-    sprite.setScale(realSize);
-    sprite.setPosition(m_position * TILE_SIZE);
+    sprite.setScale(worldSize / realSize);
+    sprite.setPosition(m_position * TILE_SIZE - (0.5 * TILE_SIZE));
 
     target.draw(sprite);
 

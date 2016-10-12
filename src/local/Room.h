@@ -28,7 +28,7 @@
 
 class Room : public gf::Entity {
 public:
-    Room(gf::Vector2f size, gf::Vector2f position, gf::Vector2u origin, const gf::Path &path, Crew *crew = nullptr);
+    Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew = nullptr);
 
     bool isHit(gf::Vector2f point) const;
     bool hasCrew() const;
@@ -41,7 +41,6 @@ public:
 private:
     gf::Vector2f m_size;
     gf::Vector2f m_position;
-    gf::Vector2u m_origin;
     std::unique_ptr<Crew> m_crew; // Crew present in Room
     gf::Texture &m_texture;
 };
