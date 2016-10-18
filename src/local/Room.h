@@ -32,8 +32,10 @@ public:
 
     bool isHit(gf::Vector2f point) const;
     bool hasCrew() const;
+    bool isFailure() const;
 
     void crewMoveTo(Room &room);
+    void failure();
 
     // virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
@@ -43,6 +45,7 @@ private:
     gf::Vector2f m_position;
     std::unique_ptr<Crew> m_crew; // Crew present in Room
     gf::Texture &m_texture;
+    bool m_failure;
 };
 
 #endif // LOCAL_ROOM_H

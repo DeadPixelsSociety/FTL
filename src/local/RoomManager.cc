@@ -41,6 +41,7 @@ RoomManager::RoomManager()
 
     gMessageManager().registerHandler<LeftClicMouse>(&RoomManager::onLeftClicMouse, this);
     gMessageManager().registerHandler<RightClicMouse>(&RoomManager::onRightClicMouse, this);
+    gMessageManager().registerHandler<RoomFailure>(&RoomManager::onRoomFailure, this);
 }
 
 void RoomManager::addRoom(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew) {
@@ -87,6 +88,34 @@ gf::MessageStatus RoomManager::onRightClicMouse(gf::Id type, gf::Message *msg){
 
     m_roomStartMove = nullptr;
     gf::Log::debug(gf::Log::General, "Room Released\n");
+
+    return gf::MessageStatus::Keep;
+}
+
+gf::MessageStatus RoomManager::onRoomFailure(gf::Id type, gf::Message *msg){
+    UNUSED(msg);
+    assert(type == RoomFailure::type);
+
+    // Check if a room is ok
+    bool isOk = false;
+    for (Room &room: m_rooms) {
+        if (!room.isFailure() && !room.hasCrew()) {
+            isOk = true;
+            break;
+        }
+    }
+    if (!isOk) {
+        return gf::MessageStatus::Keep;
+    }
+
+    // Select random room
+    unsigned random = gRandom().computeUniformInteger<unsigned>(0, m_rooms.size() - 1);
+    while (m_rooms[random].hasCrew() || m_rooms[random].isFailure()) {
+        random = gRandom().computeUniformInteger<unsigned>(0, m_rooms.size() - 1);
+    }
+
+    gf::Log::debug(gf::Log::General, "Room failure %d\n", random);
+    m_rooms[random].failure();
 
     return gf::MessageStatus::Keep;
 }

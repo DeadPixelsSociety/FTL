@@ -39,6 +39,7 @@ public:
 
     gf::MessageStatus onLeftClicMouse(gf::Id type, gf::Message *msg);
     gf::MessageStatus onRightClicMouse(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onRoomFailure(gf::Id type, gf::Message *msg);
 
 private:
     std::vector<Room> m_rooms;

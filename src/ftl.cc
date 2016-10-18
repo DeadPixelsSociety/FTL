@@ -41,6 +41,7 @@ int main() {
 
     gf::SingletonStorage<gf::MessageManager> storageForMessageManager(gMessageManager);
     gf::SingletonStorage<gf::ResourceManager> storageForResourceManager(gResourceManager);
+    gf::SingletonStorage<gf::Random> storageForRandom(gRandom);
 
     gResourceManager().addSearchDir(FTL_DATA_DIR);
 

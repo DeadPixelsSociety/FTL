@@ -30,4 +30,8 @@ struct RightClicMouse : public gf::Message {
   static const gf::Id type = "RightClicMouse"_id; // compile-time definition
 };
 
+struct RoomFailure : public gf::Message {
+  static const gf::Id type = "RoomFailure"_id; // compile-time definition
+};
+
 #endif // LOCAL_MESSAGES_H

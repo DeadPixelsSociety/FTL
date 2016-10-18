@@ -28,7 +28,8 @@ Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew 
 : m_size(size)
 , m_position(position)
 , m_crew(crew)
-, m_texture(gResourceManager().getTexture(path)) {
+, m_texture(gResourceManager().getTexture(path))
+, m_failure(false) {
 
 }
 
@@ -48,8 +49,16 @@ bool Room::hasCrew() const {
     return static_cast<bool>(m_crew);
 }
 
+bool Room::isFailure() const {
+    return m_failure;
+}
+
 void Room::crewMoveTo(Room &room) {
     room.m_crew = std::move(m_crew);
+}
+
+void Room::failure() {
+    m_failure = true;
 }
 
 void Room::render(gf::RenderTarget &target) {
@@ -66,6 +75,9 @@ void Room::render(gf::RenderTarget &target) {
     gf::Vector2f worldSize = (m_size + 1.0f) * TILE_SIZE;
     sprite.setTexture(m_texture);
     sprite.setScale(worldSize / realSize);
+    if (m_failure) {
+        sprite.setColor({255, 255, 255, 125});
+    }
     sprite.setPosition(m_position * TILE_SIZE - (0.5 * TILE_SIZE));
 
     target.draw(sprite);

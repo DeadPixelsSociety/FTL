@@ -20,12 +20,32 @@
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
 
+#include "local/Messages.h"
 #include "local/Params.h"
+#include "local/Singletons.h"
 
-void Ship::render(gf::RenderTarget &target) {
-    /*gf::RectangleShape sprite({GAME_WIDTH, GAME_HEIGHT});
-    sprite.setColor(gf::Color::Green);
-    sprite.setPosition({0.0f, 0.0f});
+Ship::Ship()
+: m_timeElapsed(0.0f) {
 
-    target.draw(sprite);*/
 }
+
+void Ship::update(float dt) {
+    m_timeElapsed += dt;
+
+    // If a failure must be launched
+    if (m_timeElapsed >= COOLDOWN_FAILURE) {
+        m_timeElapsed -= COOLDOWN_FAILURE;
+
+        RoomFailure message;
+        gMessageManager().sendMessage(&message);
+    }
+}
+
+// void Ship::render(gf::RenderTarget &target) {
+//     UNUSED(target);
+//     gf::RectangleShape sprite({GAME_WIDTH, GAME_HEIGHT});
+//     sprite.setColor(gf::Color::Green);
+//     sprite.setPosition({0.0f, 0.0f});
+
+//     target.draw(sprite);
+// }

@@ -22,8 +22,12 @@
 
 class Ship : public gf::Entity {
 public:
-    // virtual void update(float dt) override;
-    virtual void render(gf::RenderTarget &target) override;
+    Ship();
+
+    virtual void update(float dt) override;
+    // virtual void render(gf::RenderTarget &target) override;
+private:
+    float m_timeElapsed;
 };
 
 #endif // LOCAL_SHIP_H
