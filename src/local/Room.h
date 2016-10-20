@@ -47,7 +47,8 @@ private:
     gf::Texture &m_texture;
     bool m_failure;
     bool m_red;
-    float m_timeElapsed;
+    float m_timeBlink;
+    float m_timeRepair;
 };
 
 #endif // LOCAL_ROOM_H

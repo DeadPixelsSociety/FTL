@@ -20,6 +20,7 @@
 #include <gf/RenderTarget.h>
 #include <gf/Sprite.h>
 #include <gf/Log.h>
+#include <gf/Shapes.h>
 
 #include "Params.h"
 #include "Singletons.h"
@@ -31,7 +32,8 @@ Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew 
 , m_texture(gResourceManager().getTexture(path))
 , m_failure(false)
 , m_red(false)
-, m_timeElapsed(0.0f) {
+, m_timeBlink(0.0f)
+, m_timeRepair(0.0f) {
 
 }
 
@@ -65,23 +67,25 @@ void Room::failure() {
 
 void Room::update(float dt) {
     if(m_failure) {
-        m_timeElapsed += dt;
-        if (m_timeElapsed >= BLINK_TIME) {
-            m_timeElapsed -= BLINK_TIME;
+        m_timeBlink += dt;
+        if (m_timeBlink >= BLINK_TIME) {
+            m_timeBlink -= BLINK_TIME;
             m_red = !m_red;
         }
     }
+    
+    if(m_crew && m_failure) {
+        m_timeRepair += dt;
+        if (m_timeRepair >= COOLDOWN_REPAIR) {
+            m_timeRepair = 0.0f;
+            m_failure = false;
+        }
+    } else if (!m_crew && m_timeRepair > 0.0f)
+        m_timeRepair = 0.0f;
 }
 
 void Room::render(gf::RenderTarget &target) {
     gf::Sprite sprite;
-
-    // sprite.setTexture(m_texture);
-    // gf::Vector2u textureSize = m_texture.getSize() / (m_texture.getSize() / 100);
-    // gf::Vector2f realSize = (float)TILE_SIZE / textureSize / 2;
-
-    // sprite.setOrigin(m_origin);
-    // sprite.setScale(realSize);
 
     gf::Vector2f realSize = (m_size + 1.0f) * TILE_SPRITE_SIZE;
     gf::Vector2f worldSize = (m_size + 1.0f) * TILE_SIZE;
@@ -104,5 +108,21 @@ void Room::render(gf::RenderTarget &target) {
         position = position + (m_size * TILE_SIZE / 2);
         m_crew->setPosition(position);
         m_crew->render(target);
+        
+        // Drawing repair time as a loading bar upper the crew
+        if (m_timeRepair > 0.0f) {
+            gf::RectangleShape rect1({100, 10});
+            position.y -= TILE_SIZE - 10;
+            position.x -= 50;
+            rect1.setPosition(position);
+            rect1.setColor(gf::Color::White);
+            
+            gf::RectangleShape rect2({m_timeRepair / COOLDOWN_REPAIR * 100, 10});
+            rect2.setPosition(position);
+            rect2.setColor(gf::Color::Green);
+            
+            target.draw(rect1);
+            target.draw(rect2);
+        }
     }
 }

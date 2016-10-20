@@ -27,8 +27,9 @@ static constexpr unsigned INITIAL_WINDOW_HEIGHT = 405;
 static constexpr unsigned GAME_WIDTH = TILE_SIZE * 20;
 static constexpr unsigned GAME_HEIGHT = TILE_SIZE * 10;
 
-static constexpr float COOLDOWN_FAILURE = 0.5f;
 static constexpr float BLINK_TIME = 0.5f;
+static constexpr float COOLDOWN_FAILURE = 5.0f;
+static constexpr float COOLDOWN_REPAIR = 1.5f;
 
 #define UNUSED(x) (void)(x)
 
