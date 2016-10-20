@@ -37,7 +37,7 @@ public:
     void crewMoveTo(Room &room);
     void failure();
 
-    // virtual void update(float dt) override;
+    virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
 
 private:
@@ -46,6 +46,8 @@ private:
     std::unique_ptr<Crew> m_crew; // Crew present in Room
     gf::Texture &m_texture;
     bool m_failure;
+    bool m_red;
+    float m_timeElapsed;
 };
 
 #endif // LOCAL_ROOM_H

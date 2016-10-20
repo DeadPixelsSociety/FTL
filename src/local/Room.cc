@@ -29,7 +29,9 @@ Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew 
 , m_position(position)
 , m_crew(crew)
 , m_texture(gResourceManager().getTexture(path))
-, m_failure(false) {
+, m_failure(false)
+, m_red(false)
+, m_timeElapsed(0.0f) {
 
 }
 
@@ -61,6 +63,16 @@ void Room::failure() {
     m_failure = true;
 }
 
+void Room::update(float dt) {
+    if(m_failure) {
+        m_timeElapsed += dt;
+        if (m_timeElapsed >= BLINK_TIME) {
+            m_timeElapsed -= BLINK_TIME;
+            m_red = !m_red;
+        }
+    }
+}
+
 void Room::render(gf::RenderTarget &target) {
     gf::Sprite sprite;
 
@@ -76,7 +88,10 @@ void Room::render(gf::RenderTarget &target) {
     sprite.setTexture(m_texture);
     sprite.setScale(worldSize / realSize);
     if (m_failure) {
-        sprite.setColor({255, 255, 255, 125});
+        if(m_red)
+            sprite.setColor({1.0f, 0.5f, 0.5f, 1.0f});
+        else
+            sprite.setColor({1.0f, 1.0f, 1.0f, 1.0f});
     }
     sprite.setPosition(m_position * TILE_SIZE - (0.5 * TILE_SIZE));
 
