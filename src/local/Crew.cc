@@ -19,17 +19,27 @@
 
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
+#include <gf/Sprite.h>
 
 #include "Params.h"
+#include "Singletons.h"
+
+Crew::Crew(const gf::Path &path)
+: m_texture(gResourceManager().getTexture(path)) {
+}
 
 void Crew::setPosition(gf::Vector2f position) {
     m_position = position;
 }
 
 void Crew::render(gf::RenderTarget &target) {
-    gf::CircleShape circle(TILE_SIZE / 2.0);
-    circle.setPosition(m_position - circle.getRadius());
-    circle.setColor(gf::Color::Red);
-
-    target.draw(circle);
+    gf::Sprite sprite;
+    
+    sprite.setTexture(m_texture);
+    sprite.setTextureRect({0.0f, 0.0f, 33.0f / 132.0f, 48.0f / 192.0f});
+    m_position.x -= 33.0f / 2.0f;
+    m_position.y -= 48.0f / 2.0f;
+    sprite.setPosition(m_position);
+    
+    target.draw(sprite);
 }

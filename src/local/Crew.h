@@ -19,16 +19,20 @@
 #define LOCAL_CREW_H
 
 #include <gf/Entity.h>
+#include <gf/Texture.h>
 #include <gf/Vector.h>
 
 class Crew : public gf::Entity {
 public:
+    Crew(const gf::Path &path);
+    
     void setPosition(gf::Vector2f position);
 
     virtual void render(gf::RenderTarget &target) override;
 
 private:
     gf::Vector2f m_position;
+    gf::Texture &m_texture;
 };
 
 #endif // LOCAL_CREW_H

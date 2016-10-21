@@ -31,10 +31,10 @@
 RoomManager::RoomManager()
 : m_roomStartMove(nullptr){
     // Add all ship's rooms
-    addRoom({04, 4}, {15.0f, 3.0f}, "cockpit.png", new Crew());
+    addRoom({04, 4}, {15.0f, 3.0f}, "cockpit.png", new Crew("pirategirl2.png"));
     addRoom({13, 1}, {03.0f, 1.5f}, "corridor_top.png");
     addRoom({02, 2}, {00.5f, 1.5f}, "engine_top.png");
-    addRoom({01, 2}, {01.5f, 4.0f}, "corridor_left.png", new Crew());
+    addRoom({01, 2}, {01.5f, 4.0f}, "corridor_left.png", new Crew("pirate_m2.png"));
     addRoom({02, 2}, {00.5f, 6.5f}, "engine_bottom.png");
     addRoom({13, 1}, {03.0f, 7.5f}, "corridor_bottom.png");
     addRoom({02, 2}, {05.0f, 3.5f}, "oxygen_room.png");
