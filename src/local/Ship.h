@@ -19,6 +19,7 @@
 #define LOCAL_SHIP_H
 
 #include <gf/Entity.h>
+#include <gf/Message.h>
 
 class Ship : public gf::Entity {
 public:

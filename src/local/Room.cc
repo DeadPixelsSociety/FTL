@@ -22,6 +22,7 @@
 #include <gf/Log.h>
 #include <gf/Shapes.h>
 
+#include "Messages.h"
 #include "Params.h"
 #include "Singletons.h"
 
@@ -33,7 +34,8 @@ Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew 
 , m_failure(false)
 , m_red(false)
 , m_timeBlink(0.0f)
-, m_timeRepair(0.0f) {
+, m_timeRepair(0.0f)
+, m_timeFailure(0.0f) {
 
 }
 
@@ -68,20 +70,29 @@ void Room::failure() {
 void Room::update(float dt) {
     if(m_failure) {
         m_timeBlink += dt;
+        m_timeFailure += dt;
         if (m_timeBlink >= BLINK_TIME) {
             m_timeBlink -= BLINK_TIME;
             m_red = !m_red;
         }
     }
-    
+
     if(m_crew && m_failure) {
         m_timeRepair += dt;
         if (m_timeRepair >= COOLDOWN_REPAIR) {
             m_timeRepair = 0.0f;
             m_failure = false;
         }
-    } else if (!m_crew && m_timeRepair > 0.0f)
+    }
+    else if (!m_crew && m_timeRepair > 0.0f) {
         m_timeRepair = 0.0f;
+    }
+
+    if (m_timeFailure >= COOLDOWN_DESTROY) {
+        GameOver message;
+        gMessageManager().sendMessage(&message);
+        gf::Log::debug(gf::Log::General, "Destroy them all\n");
+    }
 }
 
 void Room::render(gf::RenderTarget &target) {
@@ -92,10 +103,12 @@ void Room::render(gf::RenderTarget &target) {
     sprite.setTexture(m_texture);
     sprite.setScale(worldSize / realSize);
     if (m_failure) {
-        if(m_red)
+        if(m_red) {
             sprite.setColor({1.0f, 0.5f, 0.5f, 1.0f});
-        else
+        }
+        else {
             sprite.setColor({1.0f, 1.0f, 1.0f, 1.0f});
+        }
     }
     sprite.setPosition(m_position * TILE_SIZE - (0.5 * TILE_SIZE));
 
@@ -108,7 +121,7 @@ void Room::render(gf::RenderTarget &target) {
         position = position + (m_size * TILE_SIZE / 2);
         m_crew->setPosition(position);
         m_crew->render(target);
-        
+
         // Drawing repair time as a loading bar upper the crew
         if (m_timeRepair > 0.0f) {
             gf::RectangleShape rect1({100, 10});
@@ -116,11 +129,11 @@ void Room::render(gf::RenderTarget &target) {
             position.x -= 50;
             rect1.setPosition(position);
             rect1.setColor(gf::Color::White);
-            
+
             gf::RectangleShape rect2({m_timeRepair / COOLDOWN_REPAIR * 100, 10});
             rect2.setPosition(position);
             rect2.setColor(gf::Color::Green);
-            
+
             target.draw(rect1);
             target.draw(rect2);
         }

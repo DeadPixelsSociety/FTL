@@ -17,6 +17,8 @@
 
 #include "Ship.h"
 
+#include <cassert>
+#include <gf/Log.h>
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
 
@@ -26,7 +28,6 @@
 
 Ship::Ship()
 : m_timeElapsed(0.0f) {
-
 }
 
 void Ship::update(float dt) {

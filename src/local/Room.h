@@ -49,6 +49,7 @@ private:
     bool m_red;
     float m_timeBlink;
     float m_timeRepair;
+    float m_timeFailure;
 };
 
 #endif // LOCAL_ROOM_H

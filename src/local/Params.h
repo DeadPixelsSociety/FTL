@@ -30,6 +30,7 @@ static constexpr unsigned GAME_HEIGHT = TILE_SIZE * 10;
 static constexpr float BLINK_TIME = 0.5f;
 static constexpr float COOLDOWN_FAILURE = 5.0f;
 static constexpr float COOLDOWN_REPAIR = 1.5f;
+static constexpr float COOLDOWN_DESTROY = COOLDOWN_REPAIR * 10.0f;
 
 #define UNUSED(x) (void)(x)
 
