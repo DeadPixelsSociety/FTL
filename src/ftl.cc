@@ -28,6 +28,7 @@
 #include "local/Messages.h"
 #include "local/Params.h"
 #include "local/RoomManager.h"
+#include "local/Score.h"
 #include "local/Ship.h"
 #include "local/Singletons.h"
 
@@ -67,6 +68,9 @@ int main() {
 
     RoomManager rooms;
     mainEntities.addEntity(rooms);
+
+    Score score;
+    mainEntities.addEntity(score);
 
     gf::Clock clock;
     while (window.isOpen()) {
