@@ -18,6 +18,8 @@
 #ifndef LOCAL_CREW_H
 #define LOCAL_CREW_H
 
+#include <gf/Animation.h>
+#include <gf/Direction.h>
 #include <gf/Entity.h>
 #include <gf/Texture.h>
 #include <gf/Vector.h>
@@ -26,13 +28,26 @@ class Crew : public gf::Entity {
 public:
     Crew(const gf::Path &path);
     
+    void goRight();
+    void goLeft();
+    void goUp();
+    void goDown();
+    void stop();
+    
     void setPosition(gf::Vector2f position);
 
+    virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
 
 private:
     gf::Vector2f m_position;
-    gf::Texture &m_texture;
+    
+    gf::Direction m_direction;
+    bool m_isWalking;
+
+    gf::Animation m_static;
+    gf::Animation m_running[4];
+    gf::Animation *m_currentAnimation;
 };
 
 #endif // LOCAL_CREW_H
