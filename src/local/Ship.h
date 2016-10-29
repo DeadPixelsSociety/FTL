@@ -18,16 +18,36 @@
 #ifndef LOCAL_SHIP_H
 #define LOCAL_SHIP_H
 
+#include <vector>
+
 #include <gf/Entity.h>
+#include <gf/EntityContainer.h>
 #include <gf/Message.h>
+#include <gf/Vector.h>
+
+#include "Crew.h"
+#include "Room.h"
 
 class Ship : public gf::Entity {
 public:
     Ship();
 
+    void addRoom(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew = nullptr);
+
     virtual void update(float dt) override;
-    // virtual void render(gf::RenderTarget &target) override;
+    virtual void render(gf::RenderTarget &target) override;
+
+    gf::MessageStatus onLeftClicMouse(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onRightClicMouse(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onRoomFailure(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
+
 private:
+    void generateLevel();
+
+private:
+    std::vector<Room> m_rooms;
+    Room *m_roomStartMove;
     float m_timeElapsed;
 };
 
