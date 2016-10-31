@@ -38,7 +38,7 @@ class RoomManager : public gf::Entity {
 public:
     RoomManager();
 
-    void addRoom(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew = nullptr);
+    void addRoom(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path);
     void addCrew(const gf::Path &path, Room* isInRoom);
     
     inline Room* getRoom(int id) { return &m_rooms.at(id); }
@@ -69,7 +69,6 @@ private:
     std::vector<Crew> m_crew;
     std::vector<GraphRoom*> m_graph;
     
-    Room *m_roomStartMove;
     Crew *m_crewToMove;
 };
 

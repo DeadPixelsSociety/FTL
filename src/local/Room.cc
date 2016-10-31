@@ -26,15 +26,15 @@
 #include "Params.h"
 #include "Singletons.h"
 
-Room::Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path, bool hasCrew)
-: m_size(size)
-, m_id(id)
+Room::Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path)
+: m_id(id)
+, m_size(size)
 , m_position(position)
-, m_hasCrew(hasCrew)
 , m_texture(gResourceManager().getTexture(path))
 , m_failure(false)
-, m_isRepairing(false)
 , m_red(false)
+, m_nbCrew(0)
+, m_isRepairing(false)
 , m_timeBlink(0.0f)
 , m_timeRepair(0.0f)
 , m_timeFailure(0.0f) {
@@ -42,18 +42,12 @@ Room::Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &pat
 
 bool Room::isHit(gf::Vector2f point) const {
     // If a crew is present
-    gf::Vector2f cornerTopLeft = m_position * TILE_SIZE;
-    gf::Vector2f cornerBottomRight = cornerTopLeft + m_size * TILE_SIZE;
-    if (cornerTopLeft.x < point.x && cornerBottomRight.x > point.x &&
-        cornerTopLeft.y < point.y && cornerBottomRight.y > point.y) {
-        return true;
-    }
-
-    return false;
+    gf::RectF room(m_position * TILE_SIZE, m_position * TILE_SIZE + m_size * TILE_SIZE);
+    return room.contains(point);
 }
 
 bool Room::hasCrew() const {
-    return m_hasCrew;
+    return m_nbCrew > 0;
 }
 
 bool Room::isFailure() const {
@@ -61,16 +55,31 @@ bool Room::isFailure() const {
 }
 
 void Room::crewMoveTo(Room &room) {
-    m_hasCrew = false;
-    room.m_hasCrew = true;
+    crewOut();
+    room.crewEnter();
 }
 
 void Room::failure() {
     m_failure = true;
 }
 
-void Room::addLinkedRoom(Room *room){
+void Room::addLinkedRoom(Room *room, RoomTransPosition transitionPos){
     m_linkedRoom.push_back(room);
+    m_roomTransPos.push_back(transitionPos);
+}
+
+gf::Vector2f Room::getTransPos(int roomId){
+    gf::Vector2f realSize = (m_size + 1.0f) * TILE_SPRITE_SIZE;
+    gf::Vector2f worldSize = (m_size + 1.0f) * TILE_SIZE;
+    gf::Vector2f scale = worldSize / realSize;
+    
+    for (size_t i=0; i < m_roomTransPos.size(); i++) {
+        if(m_roomTransPos[i].roomId == roomId) {
+            gf::Vector2f result = m_position * TILE_SIZE - (0.5 * TILE_SIZE) + m_roomTransPos[i].transPos * TILE_SIZE * scale;
+            return result;
+        }
+    }
+    return {-1.0f, -1.0f};
 }
 
 void Room::update(float dt) {
@@ -121,7 +130,7 @@ void Room::render(gf::RenderTarget &target) {
 
     target.draw(sprite);
 
-    if (m_hasCrew) {
+    if (hasCrew()) {
         gf::Vector2f position(m_position * TILE_SIZE);
         position = position + (m_size * TILE_SIZE / 2);
 

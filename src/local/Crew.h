@@ -26,17 +26,9 @@
 
 #include "Room.h"
 
-class Room;
-
 class Crew : public gf::Entity {
 public:
     Crew(const gf::Path &path, Room* isInRoom);
-    
-    void goRight();
-    void goLeft();
-    void goUp();
-    void goDown();
-    void stop();
     
     void setPathToRoom(std::vector<Room*> &pathRooms);
     
@@ -46,10 +38,16 @@ public:
     virtual void render(gf::RenderTarget &target) override;
 
 private:
+    void walkToCenterRoom();
+    void walkToTransitionRoom();
+        
+private:
     gf::Vector2f m_position;
     
     gf::Direction m_direction;
     bool m_isWalking;
+    bool m_arrivedToCurrTransPos;
+    bool m_arrivedToTranPos;
 
     gf::Animation m_static;
     gf::Animation m_running[4];
@@ -57,6 +55,7 @@ private:
     
     Room* m_isInRoom;
     std::vector<Room*> m_pathToRoom;
+    gf::Vector2f m_walkToPos;
 };
 
 #endif // LOCAL_CREW_H

@@ -24,29 +24,31 @@
 #include <gf/Texture.h>
 #include <gf/Vector.h>
 
-#include "Crew.h"
-
-class Crew;
+typedef struct _roomTransPosition{
+    int roomId;
+    gf::Vector2f transPos;
+} RoomTransPosition;
 
 class Room : public gf::Entity {
 public:
-    Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path, bool hasCrew = false);
+    Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path);
 
     bool isHit(gf::Vector2f point) const;
     bool hasCrew() const;
     bool isFailure() const;
 
-    void addLinkedRoom(Room* room);
+    void addLinkedRoom(Room* room, RoomTransPosition transitionPos);
 
     inline int getId() { return m_id; }
     inline float getDist() { return m_size.x * m_size.y; }
     inline gf::Vector2f getPos() { return m_position; }
     inline gf::Vector2f getSize() { return m_size; }
     inline std::vector<Room*> getLinkedRoom() { return m_linkedRoom; }
-    inline void crewEnter() { m_hasCrew = true; }
-    inline void crewOut() { m_hasCrew = false; }
+    inline void crewEnter() { m_nbCrew++; }
+    inline void crewOut() { m_nbCrew--; if(m_nbCrew==0){m_isRepairing=false;} }
     inline void repare() { m_isRepairing = true; }
     inline bool repareDone() { return !m_isRepairing; }
+    gf::Vector2f getTransPos(int roomId);
     
     void crewMoveTo(Room &room);
     void failure();
@@ -59,18 +61,20 @@ private:
     
     gf::Vector2f m_size;
     gf::Vector2f m_position;
-    bool m_hasCrew;
-    bool m_isRepairing;
     gf::Texture &m_texture;
     
     bool m_failure;
     bool m_red;
+
+    unsigned m_nbCrew;
+    bool m_isRepairing;
     
     float m_timeBlink;
     float m_timeRepair;
     float m_timeFailure;
     
     std::vector<Room *> m_linkedRoom;
+    std::vector<RoomTransPosition> m_roomTransPos;
 };
 
 #endif // LOCAL_ROOM_H

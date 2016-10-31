@@ -8,8 +8,7 @@ include(GNUInstallDirs)
 set(FTL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/ftl")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
-add_definitions(-Wall -Wextra -g -O0 -std=c++11)
-#add_definitions(-w -g -O2 -std=c++11)
+add_definitions(-Wall -Wextra -g -O2 -std=c++11)
 
 add_executable(ftl
     src/ftl.cc
