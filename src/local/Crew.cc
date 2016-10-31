@@ -19,13 +19,14 @@
 
 #include <gf/AnimatedSprite.h>
 #include <gf/RenderTarget.h>
+#include <gf/Log.h>
 
 #include "Params.h"
 #include "Singletons.h"
 
-static constexpr float FrameTime = 0.05f;
-
-static constexpr float Speed = 180.0f;
+static constexpr float FrameTime = 0.25f;
+static constexpr float Speed = 90.0f;
+static constexpr float PosTolerance = 1.0f;
 
 static void loadSingleFrameAnimation(gf::Animation& animation, const gf::Path& path) {
     gf::Texture& texture = gResourceManager().getTexture(path);
@@ -52,12 +53,14 @@ static void loadMultiFrameAnimation(gf::Animation& animation, const gf::Path& pa
     }
 }
 
-Crew::Crew(const gf::Path &path)
+Crew::Crew(const gf::Path &path, Room* isInRoom)
 : gf::Entity(2)
 , m_position(0.0, 0.0)
 , m_direction(gf::Direction::Down)
 , m_isWalking(false)
-, m_currentAnimation(&m_static) {
+, m_currentAnimation(&m_static)
+, m_isInRoom(isInRoom)
+, m_pathToRoom() {
     
     // load animation
 
@@ -68,7 +71,8 @@ Crew::Crew(const gf::Path &path)
     loadMultiFrameAnimation(m_running[static_cast<int>(gf::Direction::Left)], path, gf::Direction::Left);
     loadMultiFrameAnimation(m_running[static_cast<int>(gf::Direction::Right)], path, gf::Direction::Right);
     
-    gResourceManager().getTexture(path);
+    m_isInRoom->crewEnter();
+    m_position = (m_isInRoom->getPos() * TILE_SIZE) + (m_isInRoom->getSize() * TILE_SIZE / 2);
 }
 
 void Crew::goRight() {
@@ -95,15 +99,40 @@ void Crew::stop() {
     m_isWalking = false;
 }
 
-void Crew::setPosition(gf::Vector2f position) {
-    m_position = position;
+void Crew::setPathToRoom(std::vector<Room*> &pathRooms) {
+	m_pathToRoom = pathRooms;
+        m_isWalking = true;
 }
 
 void Crew::update(float dt) {
     // update position
-    // if (m_isWalking) {
-    //   m_position += gf::displacement(m_direction) * Speed * dt;
-    // }
+    if (m_isWalking) {
+        // (m_isInRoom->getPos() * TILE_SIZE) + (m_isInRoom->getSize() * TILE_SIZE / 2)
+        gf::Vector2f nextRoomPos = (m_pathToRoom.back()->getPos() * TILE_SIZE) + (m_pathToRoom.back()->getSize() * TILE_SIZE / 2);
+        gf::Log::debug(gf::Log::General, "Crew [%f, %f] : NextRoom [%f, %f]\n", m_position.x, m_position.y, nextRoomPos.x, nextRoomPos.y);
+        if(nextRoomPos.y > m_position.y && !(nextRoomPos.y - PosTolerance < m_position.y && nextRoomPos.y + PosTolerance > m_position.y)){
+            goDown();
+        } else if(nextRoomPos.y < m_position.y && !(nextRoomPos.y - PosTolerance < m_position.y && nextRoomPos.y + PosTolerance > m_position.y)){
+            goUp();
+        } else if(nextRoomPos.x > m_position.x && !(nextRoomPos.x - PosTolerance < m_position.x && nextRoomPos.x + PosTolerance > m_position.x)){
+            goRight();
+        } else if(nextRoomPos.x < m_position.x && !(nextRoomPos.x - PosTolerance < m_position.x && nextRoomPos.x + PosTolerance > m_position.x)){
+            goLeft();
+        } else {
+            m_isInRoom->crewMoveTo(*m_pathToRoom.back());
+            m_isInRoom = m_pathToRoom.back();
+            m_pathToRoom.pop_back();
+            if(m_pathToRoom.size() == 0){
+                stop();
+                /*
+                if(m_isInRoom->isFailure()) {
+                    m_isInRoom->repare();
+                }
+                 */
+            }
+        }
+        m_position += gf::displacement(m_direction) * Speed * dt;
+    }
     
     // update animation
     if (m_isWalking) {

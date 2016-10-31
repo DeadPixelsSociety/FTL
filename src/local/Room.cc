@@ -26,17 +26,18 @@
 #include "Params.h"
 #include "Singletons.h"
 
-Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew)
+Room::Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path, bool hasCrew)
 : m_size(size)
+, m_id(id)
 , m_position(position)
-, m_crew(crew)
+, m_hasCrew(hasCrew)
 , m_texture(gResourceManager().getTexture(path))
 , m_failure(false)
+, m_isRepairing(false)
 , m_red(false)
 , m_timeBlink(0.0f)
 , m_timeRepair(0.0f)
 , m_timeFailure(0.0f) {
-
 }
 
 bool Room::isHit(gf::Vector2f point) const {
@@ -52,7 +53,7 @@ bool Room::isHit(gf::Vector2f point) const {
 }
 
 bool Room::hasCrew() const {
-    return static_cast<bool>(m_crew);
+    return m_hasCrew;
 }
 
 bool Room::isFailure() const {
@@ -60,11 +61,16 @@ bool Room::isFailure() const {
 }
 
 void Room::crewMoveTo(Room &room) {
-    room.m_crew = std::move(m_crew);
+    m_hasCrew = false;
+    room.m_hasCrew = true;
 }
 
 void Room::failure() {
     m_failure = true;
+}
+
+void Room::addLinkedRoom(Room *room){
+    m_linkedRoom.push_back(room);
 }
 
 void Room::update(float dt) {
@@ -77,14 +83,15 @@ void Room::update(float dt) {
         }
     }
 
-    if(m_crew && m_failure) {
+    if(m_isRepairing && m_failure) {
         m_timeRepair += dt;
         if (m_timeRepair >= COOLDOWN_REPAIR) {
             m_timeRepair = 0.0f;
             m_failure = false;
+            m_isRepairing = false;
         }
     }
-    else if (!m_crew && m_timeRepair > 0.0f) {
+    else if (!m_isRepairing && m_timeRepair > 0.0f) {
         m_timeRepair = 0.0f;
     }
 
@@ -114,13 +121,9 @@ void Room::render(gf::RenderTarget &target) {
 
     target.draw(sprite);
 
-    // Render the crew if present
-    if (m_crew) {
-        // Place the crew at room center
+    if (m_hasCrew) {
         gf::Vector2f position(m_position * TILE_SIZE);
         position = position + (m_size * TILE_SIZE / 2);
-        m_crew->setPosition(position);
-        m_crew->render(target);
 
         // Drawing repair time as a loading bar upper the crew
         if (m_timeRepair > 0.0f) {

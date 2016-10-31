@@ -28,11 +28,21 @@
 #include "Crew.h"
 #include "Room.h"
 
+typedef struct _roomForGraph {
+    int id;
+    float dist;
+    struct _roomForGraph *next;
+}GraphRoom;
+
 class RoomManager : public gf::Entity {
 public:
     RoomManager();
 
-    void addRoom(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew = nullptr);
+    void addRoom(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew = nullptr);
+    void addCrew(const gf::Path &path, Room* isInRoom);
+    
+    inline Room* getRoom(int id) { return &m_rooms.at(id); }
+    inline Crew getCrew(int id) { return m_crew.at(id); }
 
     virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
@@ -44,10 +54,23 @@ public:
 
 private:
     void generateLevel();
+    
+    // Path finding stuff
+    float min(float a, float b);
+    std::vector<Room*> findPath(Room* startRoom, Room* endRoom);
+    GraphRoom* roomToGraphRoom(Room* room);
+    GraphRoom* addRoomToGraph(GraphRoom* anchor, GraphRoom* newRoom);
+    void loadGraph();
+    void iterDijkstra(float* dist, Room** prev, int current, int* dijkstra, int nbDone);
+    // End pathfinding stuff
 
 private:
     std::vector<Room> m_rooms;
+    std::vector<Crew> m_crew;
+    std::vector<GraphRoom*> m_graph;
+    
     Room *m_roomStartMove;
+    Crew *m_crewToMove;
 };
 
 #endif // LOCAL_ROOM_MANAGER_H

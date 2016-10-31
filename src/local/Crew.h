@@ -24,9 +24,13 @@
 #include <gf/Texture.h>
 #include <gf/Vector.h>
 
+#include "Room.h"
+
+class Room;
+
 class Crew : public gf::Entity {
 public:
-    Crew(const gf::Path &path);
+    Crew(const gf::Path &path, Room* isInRoom);
     
     void goRight();
     void goLeft();
@@ -34,8 +38,10 @@ public:
     void goDown();
     void stop();
     
-    void setPosition(gf::Vector2f position);
-
+    void setPathToRoom(std::vector<Room*> &pathRooms);
+    
+    inline Room* getCurrentRoom() { return m_isInRoom; }
+    
     virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
 
@@ -48,6 +54,9 @@ private:
     gf::Animation m_static;
     gf::Animation m_running[4];
     gf::Animation *m_currentAnimation;
+    
+    Room* m_isInRoom;
+    std::vector<Room*> m_pathToRoom;
 };
 
 #endif // LOCAL_CREW_H

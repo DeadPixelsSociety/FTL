@@ -26,14 +26,28 @@
 
 #include "Crew.h"
 
+class Crew;
+
 class Room : public gf::Entity {
 public:
-    Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path, Crew *crew = nullptr);
+    Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path, bool hasCrew = false);
 
     bool isHit(gf::Vector2f point) const;
     bool hasCrew() const;
     bool isFailure() const;
 
+    void addLinkedRoom(Room* room);
+
+    inline int getId() { return m_id; }
+    inline float getDist() { return m_size.x * m_size.y; }
+    inline gf::Vector2f getPos() { return m_position; }
+    inline gf::Vector2f getSize() { return m_size; }
+    inline std::vector<Room*> getLinkedRoom() { return m_linkedRoom; }
+    inline void crewEnter() { m_hasCrew = true; }
+    inline void crewOut() { m_hasCrew = false; }
+    inline void repare() { m_isRepairing = true; }
+    inline bool repareDone() { return !m_isRepairing; }
+    
     void crewMoveTo(Room &room);
     void failure();
 
@@ -41,15 +55,22 @@ public:
     virtual void render(gf::RenderTarget &target) override;
 
 private:
+    int m_id;
+    
     gf::Vector2f m_size;
     gf::Vector2f m_position;
-    std::unique_ptr<Crew> m_crew; // Crew present in Room
+    bool m_hasCrew;
+    bool m_isRepairing;
     gf::Texture &m_texture;
+    
     bool m_failure;
     bool m_red;
+    
     float m_timeBlink;
     float m_timeRepair;
     float m_timeFailure;
+    
+    std::vector<Room *> m_linkedRoom;
 };
 
 #endif // LOCAL_ROOM_H
