@@ -42,7 +42,7 @@ Room::Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &pat
 
 bool Room::isHit(gf::Vector2f point) const {
     // If a crew is present
-    gf::RectF room(m_position * TILE_SIZE, m_position * TILE_SIZE + m_size * TILE_SIZE);
+    gf::RectF room(m_position * TILE_SIZE, m_size * TILE_SIZE);
     return room.contains(point);
 }
 
