@@ -198,14 +198,17 @@ void Crew::render(gf::RenderTarget &target) {
 
     target.draw(sprite);
     
-    gf::RectangleShape debugPos({3.0f, 3.0f});
-    debugPos.setColor(gf::Color::Red);
-    debugPos.setPosition(m_position);
+    ////////////////////////////
+    // Graphical pos debugger //
+    ////////////////////////////
+    // gf::RectangleShape debugPos({3.0f, 3.0f});
+    // debugPos.setColor(gf::Color::Red);
+    // debugPos.setPosition(m_position);
     
-    gf::RectangleShape debugWalkPos({3.0f, 3.0f});
-    debugWalkPos.setColor(gf::Color::Blue);
-    debugWalkPos.setPosition(m_walkToPos);
+    // gf::RectangleShape debugWalkPos({3.0f, 3.0f});
+    // debugWalkPos.setColor(gf::Color::Blue);
+    // debugWalkPos.setPosition(m_walkToPos);
     
-    target.draw(debugPos);
-    target.draw(debugWalkPos);
+    // target.draw(debugPos);
+    // target.draw(debugWalkPos);
 }
