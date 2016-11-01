@@ -9,7 +9,7 @@ A simple "Faster Than Light" clone!
 mkdir build
 cd build
 cmake ..
-make
+make install (require superuser access)
 
 # Run the client:
 ./ftl

@@ -18,17 +18,61 @@
 #ifndef LOCAL_SHIP_H
 #define LOCAL_SHIP_H
 
+#include <vector>
+
 #include <gf/Entity.h>
+#include <gf/EntityContainer.h>
 #include <gf/Message.h>
+#include <gf/Vector.h>
+
+#include "Crew.h"
+#include "Room.h"
+
+typedef struct _roomForGraph {
+    int id;
+    float dist;
+    struct _roomForGraph *next;
+}GraphRoom;
 
 class Ship : public gf::Entity {
 public:
     Ship();
 
+    void addRoom(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path);
+    void addCrew(const gf::Path &path, Room* isInRoom);
+
+    Room* getRoom(int id);
+    Crew getCrew(int id);
+    
     virtual void update(float dt) override;
-    // virtual void render(gf::RenderTarget &target) override;
+    virtual void render(gf::RenderTarget &target) override;
+
+    gf::MessageStatus onLeftClicMouse(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onRightClicMouse(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onRoomFailure(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
+
+private:
+    void generateLevel();
+    
+    // Path finding stuff
+    float min(float a, float b);
+    std::vector<Room*> findPath(Room* startRoom, Room* endRoom);
+    GraphRoom* roomToGraphRoom(Room* room);
+    GraphRoom* addRoomToGraph(GraphRoom* anchor, GraphRoom* newRoom);
+    void loadGraph();
+    void iterDijkstra(float* dist, Room** prev, int current, int* dijkstra, int nbDone);
+    // End pathfinding stuff
+
 private:
     float m_timeElapsed;
+    
+    std::vector<Room> m_rooms;
+    std::vector<Crew> m_crew;
+    
+    Crew *m_crewToMove;
+    
+    std::vector<GraphRoom*> m_graph;
 };
 
 #endif // LOCAL_SHIP_H
