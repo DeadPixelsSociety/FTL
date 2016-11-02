@@ -48,6 +48,7 @@ private:
     bool m_isWalking;
     bool m_arrivedToCurrTransPos;
     bool m_arrivedToTranPos;
+	bool m_isInRoomCenter;
 
     gf::Animation m_static;
     gf::Animation m_running[4];

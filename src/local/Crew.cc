@@ -62,6 +62,7 @@ Crew::Crew(const gf::Path &path, Room* isInRoom)
 , m_isWalking(false)
 , m_arrivedToCurrTransPos(false)
 , m_arrivedToTranPos(false)
+, m_isInRoomCenter(true)
 , m_currentAnimation(&m_static)
 , m_isInRoom(isInRoom)
 , m_pathToRoom()
@@ -84,6 +85,7 @@ void Crew::setPathToRoom(std::vector<Room*> &pathRooms) {
     }
     m_pathToRoom = pathRooms;
     m_isWalking = true;
+	m_isInRoomCenter = false;
 }
 
 void Crew::walkToCenterRoom() {
@@ -104,9 +106,18 @@ void Crew::walkToCenterRoom() {
                 && m_walkToPos.y + PosTolerance > m_position.y) {
             m_arrivedToTranPos = true;
             m_walkToPos = (m_pathToRoom.back()->getPos() * TILE_SIZE) + (m_pathToRoom.back()->getSize() * TILE_SIZE / 2);
+			m_isInRoom->crewMoveTo(*m_pathToRoom.back());
+			m_isInRoom = m_pathToRoom.back();
+			m_pathToRoom.pop_back();
         }
     } else {
-        m_walkToPos = (m_pathToRoom.back()->getPos() * TILE_SIZE) + (m_pathToRoom.back()->getSize() * TILE_SIZE / 2);
+        m_walkToPos = (m_isInRoom->getPos() * TILE_SIZE) + (m_isInRoom->getSize() * TILE_SIZE / 2);
+		if ( m_walkToPos.x - PosTolerance < m_position.x
+			&& m_walkToPos.x + PosTolerance > m_position.x
+			&& m_walkToPos.y - PosTolerance < m_position.y
+			&& m_walkToPos.y + PosTolerance > m_position.y ) {
+			m_isInRoomCenter = true;
+		}
     }
     
     bool xOk = (m_walkToPos.x - PosTolerance < m_position.x && m_walkToPos.x + PosTolerance > m_position.x);
@@ -121,12 +132,9 @@ void Crew::walkToCenterRoom() {
     } else if(m_walkToPos.x < m_position.x && !xOk){
         m_direction = gf::Direction::Left;
     } else {
-        m_isInRoom->crewMoveTo(*m_pathToRoom.back());
-        m_isInRoom = m_pathToRoom.back();
-        m_pathToRoom.pop_back();
         m_arrivedToCurrTransPos = false;
         m_arrivedToTranPos = false;
-        if(m_pathToRoom.size() == 0){
+        if(m_isInRoomCenter){
             m_isWalking = false;
             m_walkToPos = {-1.0f, -1.0f};
             if(m_isInRoom->isFailure()) {
