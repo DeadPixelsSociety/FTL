@@ -48,7 +48,7 @@ int main() {
     gf::ViewContainer views;
 
     gf::ExtendView shipView;
-    shipView.setSize({ GAME_WIDTH, GAME_HEIGHT });
+    shipView.setSize({ (float)GAME_WIDTH, (float)GAME_HEIGHT });
     shipView.setCenter({ GAME_WIDTH/2.0f, GAME_HEIGHT/2.0f });
     views.addView(shipView);
 
