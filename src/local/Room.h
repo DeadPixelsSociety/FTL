@@ -24,10 +24,10 @@
 #include <gf/Texture.h>
 #include <gf/Vector.h>
 
-typedef struct _roomTransPosition{
+struct RoomTransPosition{
     int roomId;
     gf::Vector2f transPos;
-} RoomTransPosition;
+};
 
 class Room : public gf::Entity {
 public:

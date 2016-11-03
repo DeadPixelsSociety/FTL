@@ -28,11 +28,11 @@
 #include "Crew.h"
 #include "Room.h"
 
-typedef struct _roomForGraph {
+struct GraphRoom {
     int id;
     float dist;
-    struct _roomForGraph *next;
-}GraphRoom;
+    struct GraphRoom *next;
+};
 
 class Ship : public gf::Entity {
 public:
@@ -55,7 +55,7 @@ public:
 private:
     void generateLevel();
     
-    // Path finding stuff
+    // Path finding stuff using Dijkstra algo.
     float min(float a, float b);
     std::vector<Room*> findPath(Room* startRoom, Room* endRoom);
     GraphRoom* roomToGraphRoom(Room* room);

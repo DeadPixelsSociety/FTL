@@ -23,6 +23,8 @@
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
+#include <stdlib.h>
+#include <malloc.h>
 
 #include "Crew.h"
 #include "Messages.h"
@@ -196,13 +198,19 @@ void Ship::generateLevel() {
 ////////////////////////
 // DIJKSTRA FUNCTIONS //
 ////////////////////////
+
+/*
+ * Print the minimum way in console from a start room to an end room
+ */
 void printMinWay(float* dist, Room** prev, Room* startRoom, Room* endRoom) {
     Room* way = endRoom;
 
     gf::Log::debug(gf::Log::General, "Way :\n");
+    // Check if there is a way from the start room to the end
     if(dist[endRoom->getId()] == FLT_MAX) {
         gf::Log::debug(gf::Log::General, "There is no way :'(\n");
     } else {
+        // Print all rooms id starting from the end to the start (the start room will be the last and the end room will be the first in console
         while(way->getId() != startRoom->getId()) {
             gf::Log::debug(gf::Log::General, "Room : [%d]\n", way->getId(), dist[way->getId()]);
             way = prev[way->getId()];
@@ -211,11 +219,18 @@ void printMinWay(float* dist, Room** prev, Room* startRoom, Room* endRoom) {
     }
 }
 
+/*
+ * Return minimum value between two floats
+ */
 float Ship::min(float a, float b){
     return a<b ? a : b;
 }
 
+/*
+ * Function that initialize the Dijkstra algo and build the path from the start room to the end room
+ */
 std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
+    // Var declaration and initialisation
     float* dist;
     Room** prev;
     int* dijkstra;
@@ -234,11 +249,14 @@ std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
     dist[startRoom->getId()] = 0;
     dijkstra[startRoom->getId()] = 1;
 
+    // Start the search of the path
     iterDijkstra(dist, prev, startRoom->getId(), dijkstra, 1);
 
-    // DEBUG IN CONSOLE :
+    // UNCOMMENT THIS TO DEBUG IN CONSOLE :
     // printMinWay(dist, prev, startRoom, endRoom);
 
+    // TODO: A little bit of optimization here?
+    // Convert the path for crew type.
     std::vector<Room*> roomPath;
     Room* way = endRoom;
 
@@ -254,6 +272,9 @@ std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
     return roomPath;
 }
 
+/*
+ * Convert the Room class to the GraphRoom struct.
+ */
 GraphRoom* Ship::roomToGraphRoom(Room* room){
     GraphRoom* gRoom = (GraphRoom*)malloc(sizeof(GraphRoom));
     gRoom->id = room->getId();
@@ -262,6 +283,9 @@ GraphRoom* Ship::roomToGraphRoom(Room* room){
     return gRoom;
 }
 
+/*
+ * Add the GraphRoom to our stored graph.
+ */
 GraphRoom* Ship::addRoomToGraph(GraphRoom* anchor, GraphRoom* newRoom){
     if(anchor == nullptr) {
         anchor = newRoom;
@@ -273,6 +297,9 @@ GraphRoom* Ship::addRoomToGraph(GraphRoom* anchor, GraphRoom* newRoom){
     return anchor;
 }
 
+/*
+ * Convert All rooms to a Graph of room for Dijkstra algo based on m_rooms.
+ */
 void Ship::loadGraph(){
     GraphRoom* tmp = nullptr;
 
@@ -291,17 +318,22 @@ void Ship::loadGraph(){
     }
 }
 
+/*
+ * Magic function!
+ * Search for the path from a room to another!
+ */
 void Ship::iterDijkstra(float* dist, Room** prev, int current, int* dijkstra, int nbDone){
+    // Var declaration
     int newWay = -1;
     GraphRoom* copy=nullptr;
     float minWay=FLT_MAX;
     float tmpDist=0;
 
-    copy = new GraphRoom();
     copy = m_graph[current];
 
+    // Check-loop on distance.
     while(copy!=nullptr) {
-        tmpDist =  dist[copy->id];
+        tmpDist = dist[copy->id];
         dist[copy->id] = min(dist[copy->id], dist[current] + copy->dist);
         if(tmpDist != dist[copy->id]) {
             prev[copy->id] = &m_rooms[current];
@@ -309,6 +341,7 @@ void Ship::iterDijkstra(float* dist, Room** prev, int current, int* dijkstra, in
         copy = copy->next;
     }
 
+    // get the minimum way based on the distance
     for(unsigned i=0; i<m_rooms.size(); i++)
     {
         if(dijkstra[i] == 0)
@@ -320,9 +353,11 @@ void Ship::iterDijkstra(float* dist, Room** prev, int current, int* dijkstra, in
         }
     }    
 
+    // Go to next room
     dijkstra[newWay] = 1;
     nbDone++;
 
+    // Recurse all of this to make sure that all ways are tested.
     if(nbDone != (int)m_rooms.size()) {
         iterDijkstra(dist, prev, newWay, dijkstra, nbDone);
     }
