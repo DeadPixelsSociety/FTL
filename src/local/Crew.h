@@ -21,7 +21,6 @@
 #include <gf/Animation.h>
 #include <gf/Direction.h>
 #include <gf/Entity.h>
-#include <gf/Texture.h>
 #include <gf/Vector.h>
 
 #include "Room.h"

@@ -17,24 +17,21 @@
 
 #include "Ship.h"
 
-#include <cassert>
-#include <cfloat>
-
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
-#include <gf/Shapes.h>
-#include <stdlib.h>
-#include <malloc.h>
+#include <unordered_map>
 
-#include "Crew.h"
 #include "Messages.h"
 #include "Params.h"
 #include "Singletons.h"
 
+float heuristic(gf::Vector2f a, gf::Vector2f b) {
+    return std::abs(a.x - b.x) + std::abs(a.y - b.y);
+}
+
 Ship::Ship()
 : m_timeElapsed(0.0f)
-, m_crewToMove(nullptr)
-, m_graph() {
+, m_crewToMove(nullptr) {
     gMessageManager().registerHandler<LeftClicMouse>(&Ship::onLeftClicMouse, this);
     gMessageManager().registerHandler<RightClicMouse>(&Ship::onRightClicMouse, this);
     gMessageManager().registerHandler<RoomFailure>(&Ship::onRoomFailure, this);
@@ -42,20 +39,12 @@ Ship::Ship()
     generateLevel();
 }
 
-void Ship::addRoom(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path) {
-    m_rooms.push_back(Room(id, size, position, path));
+void Ship::addRoom(gf::Vector2f size, gf::Vector2f position, const gf::Path &path) {
+    m_rooms.push_back(Room(size, position, path));
 }
 
 void Ship::addCrew(const gf::Path &path, Room* isInRoom) {
     m_crew.push_back(Crew(path, isInRoom));
-}
-
-Room* Ship::getRoom(int id) {
-    return &m_rooms.at(id);
-}
-
-Crew Ship::getCrew(int id) {
-    return m_crew.at(id);
 }
 
 void Ship::update(float dt) {
@@ -94,14 +83,14 @@ gf::MessageStatus Ship::onLeftClicMouse(gf::Id type, gf::Message *msg){
 
     if (m_crewToMove == nullptr) {
         for(Crew &crew: m_crew) {
-            if(crew.getCurrentRoom()->isHit(leftClic->position) && crew.getCurrentRoom()->repareDone()) {
+            if(crew.getCurrentRoom()->isHit(leftClic->position)) {
                 gf::Log::debug(gf::Log::General, "Room hited 1\n");
                 m_crewToMove = &crew;
             }
         }
     } else {
         for(Room &room: m_rooms) {
-            if (room.isHit(leftClic->position) && !room.hasCrew()) {
+            if (room.isHit(leftClic->position)) {
                 gf::Log::debug(gf::Log::General, "Room hited 2\n");
                 std::vector<Room*> roomPath = findPath(m_crewToMove->getCurrentRoom(), &room);
                 m_crewToMove->setPathToRoom(roomPath);
@@ -118,7 +107,7 @@ gf::MessageStatus Ship::onRightClicMouse(gf::Id type, gf::Message *msg){
     assert(type == RightClicMouse::type);
 
     m_crewToMove = nullptr;
-    gf::Log::debug(gf::Log::General, "Room Released\n");
+    gf::Log::debug(gf::Log::General, "PathFinding Released\n");
 
     return gf::MessageStatus::Keep;
 }
@@ -165,200 +154,84 @@ gf::MessageStatus Ship::onGameOver(gf::Id type, gf::Message *msg){
 
 void Ship::generateLevel() {
     // Add all ship's rooms
-    addRoom(m_rooms.size(), {04, 4}, {15.0f, 3.0f}, "cockpit.png");
-    addRoom(m_rooms.size(), {13, 1}, {03.0f, 1.5f}, "corridor_top.png");
-    addRoom(m_rooms.size(), {02, 2}, {00.5f, 1.5f}, "engine_top.png");
-    addRoom(m_rooms.size(), {01, 2}, {01.5f, 4.0f}, "corridor_left.png");
-    addRoom(m_rooms.size(), {02, 2}, {00.5f, 6.5f}, "engine_bottom.png");
-    addRoom(m_rooms.size(), {13, 1}, {03.0f, 7.5f}, "corridor_bottom.png");
-    addRoom(m_rooms.size(), {02, 2}, {05.0f, 3.5f}, "oxygen_room.png");
+    addRoom({04, 4}, {15.0f, 3.0f}, "cockpit.png");
+    addRoom({13, 1}, {03.0f, 1.5f}, "corridor_top.png");
+    addRoom({02, 2}, {00.5f, 1.5f}, "engine_top.png");
+    addRoom({01, 2}, {01.5f, 4.0f}, "corridor_left.png");
+    addRoom({02, 2}, {00.5f, 6.5f}, "engine_bottom.png");
+    addRoom({13, 1}, {03.0f, 7.5f}, "corridor_bottom.png");
+    addRoom({02, 2}, {05.0f, 3.5f}, "oxygen_room.png");
     
-    m_rooms.at(0).addLinkedRoom(&m_rooms.at(1), {m_rooms.at(1).getId(), {2.0f, 2.0f}});
-    m_rooms.at(0).addLinkedRoom(&m_rooms.at(5), {m_rooms.at(5).getId(), {2.0f, 8.0f}});
-    m_rooms.at(1).addLinkedRoom(&m_rooms.at(0), {m_rooms.at(0).getId(), {26.0f, 2.0f}});
-    m_rooms.at(1).addLinkedRoom(&m_rooms.at(2), {m_rooms.at(2).getId(), {2.0f, 2.0f}});
-    m_rooms.at(1).addLinkedRoom(&m_rooms.at(6), {m_rooms.at(6).getId(), {8.0f, 2.0f}});
-    m_rooms.at(2).addLinkedRoom(&m_rooms.at(1), {m_rooms.at(1).getId(), {4.0f, 2.0f}});
-    m_rooms.at(2).addLinkedRoom(&m_rooms.at(3), {m_rooms.at(3).getId(), {4.0f, 4.0f}});
-    m_rooms.at(3).addLinkedRoom(&m_rooms.at(2), {m_rooms.at(2).getId(), {2.0f, 2.0f}});
-    m_rooms.at(3).addLinkedRoom(&m_rooms.at(4), {m_rooms.at(4).getId(), {2.0f, 4.0f}});
-    m_rooms.at(4).addLinkedRoom(&m_rooms.at(3), {m_rooms.at(3).getId(), {4.0f, 2.0f}});
-    m_rooms.at(4).addLinkedRoom(&m_rooms.at(5), {m_rooms.at(5).getId(), {4.0f, 4.0f}});
-    m_rooms.at(5).addLinkedRoom(&m_rooms.at(0), {m_rooms.at(0).getId(), {26.0f, 2.0f}});
-    m_rooms.at(5).addLinkedRoom(&m_rooms.at(4), {m_rooms.at(4).getId(), {2.0f, 2.0f}});
-    m_rooms.at(6).addLinkedRoom(&m_rooms.at(1), {m_rooms.at(1).getId(), {4.0f, 2.0f}});
+    // addLinkedRoom(ptrLRoom, pos, cost);
+    // Add connection between rooms. Parameters are:
+    // ptrLRoom : A pointer to the linked room
+    // pos : position in room where the "checkpoint" will be place to the next room.
+    // cost : numeric value between the room and the linked room cost
+    //          (higher value tells to A* Search that going from this room to the other cost more energy.
+    //          It will so prefer a path or another.)
+    // TODO: review the cost value!
+    m_rooms[0].addLinkedRoom(&m_rooms[1], {2.0f, 2.0f}, 2);
+    m_rooms[0].addLinkedRoom(&m_rooms[5], {2.0f, 8.0f}, 2);
+    m_rooms[1].addLinkedRoom(&m_rooms[0], {26.0f, 2.0f}, 1);
+    m_rooms[1].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 4);
+    m_rooms[1].addLinkedRoom(&m_rooms[6], {8.0f, 2.0f}, 1);
+    m_rooms[2].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 4);
+    m_rooms[2].addLinkedRoom(&m_rooms[3], {4.0f, 4.0f}, 1);
+    m_rooms[3].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 1);
+    m_rooms[3].addLinkedRoom(&m_rooms[4], {2.0f, 4.0f}, 1);
+    m_rooms[4].addLinkedRoom(&m_rooms[3], {4.0f, 2.0f}, 1);
+    m_rooms[4].addLinkedRoom(&m_rooms[5], {4.0f, 4.0f}, 4);
+    m_rooms[5].addLinkedRoom(&m_rooms[0], {26.0f, 2.0f}, 1);
+    m_rooms[5].addLinkedRoom(&m_rooms[4], {2.0f, 2.0f}, 4);
+    m_rooms[6].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 1);
     
-    addCrew("pirategirl2.png", &m_rooms.at(0));
-    addCrew("pirate_m2.png", &m_rooms.at(3));
-    
-    loadGraph();
+    addCrew("pirategirl2.png", &m_rooms[0]);
+    addCrew("pirate_m2.png", &m_rooms[3]);
 }
 
-
-////////////////////////
-// DIJKSTRA FUNCTIONS //
-////////////////////////
-
-/*
- * Print the minimum way in console from a start room to an end room
- */
-void printMinWay(float* dist, Room** prev, Room* startRoom, Room* endRoom) {
-    Room* way = endRoom;
-
-    gf::Log::debug(gf::Log::General, "Way :\n");
-    // Check if there is a way from the start room to the end
-    if(dist[endRoom->getId()] == FLT_MAX) {
-        gf::Log::debug(gf::Log::General, "There is no way :'(\n");
-    } else {
-        // Print all rooms id starting from the end to the start (the start room will be the last and the end room will be the first in console
-        while(way->getId() != startRoom->getId()) {
-            gf::Log::debug(gf::Log::General, "Room : [%d]\n", way->getId(), dist[way->getId()]);
-            way = prev[way->getId()];
-        }
-        gf::Log::debug(gf::Log::General, " Start : %d\n", startRoom->getId());
-    }
-}
-
-/*
- * Return minimum value between two floats
- */
-float Ship::min(float a, float b){
-    return a<b ? a : b;
-}
-
-/*
- * Function that initialize the Dijkstra algo and build the path from the start room to the end room
- */
 std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
-    // Var declaration and initialisation
-    float* dist;
-    Room** prev;
-    int* dijkstra;
-
-    dist        = (float*)malloc(m_rooms.size()*sizeof(float));
-    prev        = (Room**)malloc(m_rooms.size()*sizeof(Room*));
-    dijkstra    = (int*)malloc(m_rooms.size()*sizeof(int));
-
-    for(unsigned i=0; i<m_rooms.size(); i++)
-    {
-        dist[i] = FLT_MAX;
-        prev[i] = nullptr;
-        dijkstra[i] = 0;
+    //////////////////
+    // A* Algorithm //
+    //////////////////
+    std::unordered_map<Room*, Room*> cameFrom;
+    std::unordered_map<Room*, double> costSoFar;
+    PriorityQueue<Room*, double> frontier;
+    frontier.put(startRoom, 0);
+    cameFrom[startRoom] = startRoom;
+    costSoFar[startRoom] = 0;
+    
+    while(!frontier.empty()) {
+        Room* current = frontier.get();
+        if (current == endRoom) {
+            break;
+        }
+        for (auto next : current->getLinkedRoom()) {
+            double newCost = costSoFar[current] + next.second;
+            if (!costSoFar.count(next.first) || newCost < costSoFar[next.first]) {
+                costSoFar[next.first] = newCost;
+                double priority = newCost + heuristic(next.first->getPos(), endRoom->getPos());
+                frontier.put(next.first, priority);
+                cameFrom[next.first] = current;
+            }
+        }
     }
-
-    dist[startRoom->getId()] = 0;
-    dijkstra[startRoom->getId()] = 1;
-
-    // Start the search of the path
-    iterDijkstra(dist, prev, startRoom->getId(), dijkstra, 1);
-
-    // UNCOMMENT THIS TO DEBUG IN CONSOLE :
-    // printMinWay(dist, prev, startRoom, endRoom);
-
-    // TODO: A little bit of optimization here?
-    // Convert the path for crew type.
+    /////////////////////////
+    // End of A* algorithm //
+    /////////////////////////
+    
+    //////////////////////////////////
+    // Rebuild the path
+    // Convert the path for crew.
+    //////////////////////////////////
     std::vector<Room*> roomPath;
-    Room* way = endRoom;
-
-    if(dist[endRoom->getId()] == FLT_MAX) {
-        gf::Log::debug(gf::Log::General, "There is no way :'(");
-    } else {
-        while(way->getId() != startRoom->getId()) {
-            roomPath.push_back(way);
-            way = prev[way->getId()];
-        }
+    Room* current = endRoom;
+    
+    roomPath.push_back(current);
+    while (current != startRoom) {
+        current = cameFrom[current];
+        roomPath.push_back(current);
     }
-
+    roomPath.pop_back();
+    
     return roomPath;
-}
-
-/*
- * Convert the Room class to the GraphRoom struct.
- */
-GraphRoom* Ship::roomToGraphRoom(Room* room){
-    GraphRoom* gRoom = (GraphRoom*)malloc(sizeof(GraphRoom));
-    gRoom->id = room->getId();
-    gRoom->dist = room->getDist();
-
-    return gRoom;
-}
-
-/*
- * Add the GraphRoom to our stored graph.
- */
-GraphRoom* Ship::addRoomToGraph(GraphRoom* anchor, GraphRoom* newRoom){
-    if(anchor == nullptr) {
-        anchor = newRoom;
-        anchor->next = nullptr;
-    } else {
-        newRoom->next = anchor;
-        anchor = newRoom;
-    }
-    return anchor;
-}
-
-/*
- * Convert All rooms to a Graph of room for Dijkstra algo based on m_rooms.
- */
-void Ship::loadGraph(){
-    GraphRoom* tmp = nullptr;
-
-    for(unsigned i=0; i<m_rooms.size(); i++) {
-        m_graph.push_back(new GraphRoom());
-        m_graph[i] = nullptr;
-
-        int nbNext = m_rooms[i].getLinkedRoom().size();
-        if(nbNext != 0) {
-            for(int j=0; j < nbNext; j++) {
-                tmp = new GraphRoom();
-                tmp = roomToGraphRoom(m_rooms[i].getLinkedRoom()[j]);
-                m_graph[i] = addRoomToGraph(m_graph[i], tmp);
-            }
-        }
-    }
-}
-
-/*
- * Magic function!
- * Search for the path from a room to another!
- */
-void Ship::iterDijkstra(float* dist, Room** prev, int current, int* dijkstra, int nbDone){
-    // Var declaration
-    int newWay = -1;
-    GraphRoom* copy=nullptr;
-    float minWay=FLT_MAX;
-    float tmpDist=0;
-
-    copy = m_graph[current];
-
-    // Check-loop on distance.
-    while(copy!=nullptr) {
-        tmpDist = dist[copy->id];
-        dist[copy->id] = min(dist[copy->id], dist[current] + copy->dist);
-        if(tmpDist != dist[copy->id]) {
-            prev[copy->id] = &m_rooms[current];
-        }
-        copy = copy->next;
-    }
-
-    // get the minimum way based on the distance
-    for(unsigned i=0; i<m_rooms.size(); i++)
-    {
-        if(dijkstra[i] == 0)
-        {
-            minWay = min(minWay, dist[i]);
-            if(minWay == dist[i]) {
-                newWay = i;
-            }
-        }
-    }    
-
-    // Go to next room
-    dijkstra[newWay] = 1;
-    nbDone++;
-
-    // Recurse all of this to make sure that all ways are tested.
-    if(nbDone != (int)m_rooms.size()) {
-        iterDijkstra(dist, prev, newWay, dijkstra, nbDone);
-    }
 }

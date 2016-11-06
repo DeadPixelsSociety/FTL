@@ -18,37 +18,27 @@
 #ifndef LOCAL_ROOM_H
 #define LOCAL_ROOM_H
 
-#include <memory>
-
 #include <gf/Entity.h>
 #include <gf/Texture.h>
 #include <gf/Vector.h>
 
-struct RoomTransPosition{
-    int roomId;
-    gf::Vector2f transPos;
-};
-
 class Room : public gf::Entity {
 public:
-    Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path);
+    Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path);
 
     bool isHit(gf::Vector2f point) const;
     bool hasCrew() const;
     bool isFailure() const;
 
-    void addLinkedRoom(Room* room, RoomTransPosition transitionPos);
+    void addLinkedRoom(Room* room, gf::Vector2f transitionPos, double cost);
 
-    inline int getId() { return m_id; }
-    inline float getDist() { return m_size.x * m_size.y; }
     inline gf::Vector2f getPos() { return m_position; }
-    inline gf::Vector2f getSize() { return m_size; }
-    inline std::vector<Room*> getLinkedRoom() { return m_linkedRoom; }
+    inline std::map<Room*, double> getLinkedRoom() { return m_linkedCost; }
     inline void crewEnter() { m_nbCrew++; }
-    inline void crewOut() { m_nbCrew--; if(m_nbCrew==0){m_isRepairing=false;} }
+    void crewOut();
     inline void repare() { m_isRepairing = true; }
-    inline bool repareDone() { return !m_isRepairing; }
-    gf::Vector2f getTransPos(int roomId);
+    gf::Vector2f getTransPos(Room* withRoom);
+    gf::Vector2f getRoomCenter();
     
     void crewMoveTo(Room &room);
     void failure();
@@ -57,8 +47,6 @@ public:
     virtual void render(gf::RenderTarget &target) override;
 
 private:
-    int m_id;
-    
     gf::Vector2f m_size;
     gf::Vector2f m_position;
     gf::Texture &m_texture;
@@ -73,8 +61,8 @@ private:
     float m_timeRepair;
     float m_timeFailure;
     
-    std::vector<Room *> m_linkedRoom;
-    std::vector<RoomTransPosition> m_roomTransPos;
+    std::map<Room*, gf::Vector2f> m_linkedPos;
+    std::map<Room*, double> m_linkedCost;
 };
 
 #endif // LOCAL_ROOM_H
