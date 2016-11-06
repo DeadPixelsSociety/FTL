@@ -20,9 +20,7 @@
 #include <gf/AnimatedSprite.h>
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
-#include <gf/Shapes.h>
 
-#include "Params.h"
 #include "Singletons.h"
 
 static constexpr float FrameTime = 0.2f;
@@ -47,7 +45,7 @@ static void loadMultiFrameAnimation(gf::Animation& animation, const gf::Path& pa
         case gf::Direction::Down: directionOffset = 0.0f; break;
         case gf::Direction::Left: directionOffset = 1.0f; break;
         case gf::Direction::Right: directionOffset = 2.0f; break;
-        case gf::Direction::Center: exit(1);
+        case gf::Direction::Center: return;
     }
 
     for (unsigned i = 0; i < 4; ++i) {
@@ -76,7 +74,7 @@ Crew::Crew(const gf::Path &path, Room* isInRoom)
     loadMultiFrameAnimation(m_running[static_cast<int>(gf::Direction::Right)], path, gf::Direction::Right);
     
     m_isInRoom->crewEnter();
-    m_position = (m_isInRoom->getPos() * TILE_SIZE) + (m_isInRoom->getSize() * TILE_SIZE / 2);
+    m_position = m_isInRoom->getRoomCenter();
 }
 
 void Crew::setPathToRoom(std::vector<Room*> &pathRooms) {
@@ -90,28 +88,28 @@ void Crew::setPathToRoom(std::vector<Room*> &pathRooms) {
 
 void Crew::walkToCenterRoom() {
     if(!m_arrivedToCurrTransPos){
-        m_walkToPos = m_isInRoom->getTransPos(m_pathToRoom.back()->getId());
+        m_walkToPos = m_isInRoom->getTransPos(m_pathToRoom.back());
         if(m_walkToPos.x - PosTolerance < m_position.x
                 && m_walkToPos.x + PosTolerance > m_position.x
                 && m_walkToPos.y - PosTolerance < m_position.y
                 && m_walkToPos.y + PosTolerance > m_position.y) {
             m_arrivedToCurrTransPos = true;
-            m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom->getId());
+            m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
         }
     } else if(!m_arrivedToTranPos){
-        m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom->getId());
+        m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
         if(m_walkToPos.x - PosTolerance < m_position.x
                 && m_walkToPos.x + PosTolerance > m_position.x
                 && m_walkToPos.y - PosTolerance < m_position.y
                 && m_walkToPos.y + PosTolerance > m_position.y) {
             m_arrivedToTranPos = true;
-            m_walkToPos = (m_pathToRoom.back()->getPos() * TILE_SIZE) + (m_pathToRoom.back()->getSize() * TILE_SIZE / 2);
+            m_walkToPos = m_isInRoom->getRoomCenter();
 			m_isInRoom->crewMoveTo(*m_pathToRoom.back());
 			m_isInRoom = m_pathToRoom.back();
 			m_pathToRoom.pop_back();
         }
     } else {
-        m_walkToPos = (m_isInRoom->getPos() * TILE_SIZE) + (m_isInRoom->getSize() * TILE_SIZE / 2);
+        m_walkToPos = m_isInRoom->getRoomCenter();
 		if ( m_walkToPos.x - PosTolerance < m_position.x
 			&& m_walkToPos.x + PosTolerance > m_position.x
 			&& m_walkToPos.y - PosTolerance < m_position.y
@@ -145,16 +143,16 @@ void Crew::walkToCenterRoom() {
 }
 void Crew::walkToTransitionRoom() {
     if(!m_arrivedToCurrTransPos){
-        m_walkToPos = m_isInRoom->getTransPos(m_pathToRoom.back()->getId());
+        m_walkToPos = m_isInRoom->getTransPos(m_pathToRoom.back());
         if(m_walkToPos.x - PosTolerance < m_position.x
                 && m_walkToPos.x + PosTolerance > m_position.x
                 && m_walkToPos.y - PosTolerance < m_position.y
                 && m_walkToPos.y + PosTolerance > m_position.y) {
             m_arrivedToCurrTransPos = true;
-            m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom->getId());
+            m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
         }
     } else {
-        m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom->getId());
+        m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
     }
     
     bool xOk = (m_walkToPos.x - PosTolerance < m_position.x && m_walkToPos.x + PosTolerance > m_position.x);
@@ -205,18 +203,4 @@ void Crew::render(gf::RenderTarget &target) {
     sprite.setAnchor(gf::Anchor::Center);
 
     target.draw(sprite);
-    
-    ////////////////////////////
-    // Graphical pos debugger //
-    ////////////////////////////
-    // gf::RectangleShape debugPos({3.0f, 3.0f});
-    // debugPos.setColor(gf::Color::Red);
-    // debugPos.setPosition(m_position);
-    
-    // gf::RectangleShape debugWalkPos({3.0f, 3.0f});
-    // debugWalkPos.setColor(gf::Color::Blue);
-    // debugWalkPos.setPosition(m_walkToPos);
-    
-    // target.draw(debugPos);
-    // target.draw(debugWalkPos);
 }

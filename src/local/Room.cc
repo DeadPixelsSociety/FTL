@@ -26,9 +26,8 @@
 #include "Params.h"
 #include "Singletons.h"
 
-Room::Room(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path)
-: m_id(id)
-, m_size(size)
+Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path)
+: m_size(size)
 , m_position(position)
 , m_texture(gResourceManager().getTexture(path))
 , m_failure(false)
@@ -63,23 +62,34 @@ void Room::failure() {
     m_failure = true;
 }
 
-void Room::addLinkedRoom(Room *room, RoomTransPosition transitionPos){
-    m_linkedRoom.push_back(room);
-    m_roomTransPos.push_back(transitionPos);
+void Room::addLinkedRoom(Room* room, gf::Vector2f transitionPos, double cost) {
+    m_linkedPos.emplace(room, transitionPos);
+    m_linkedCost.emplace(room, cost);
 }
 
-gf::Vector2f Room::getTransPos(int roomId){
+void Room::crewOut() {
+    m_nbCrew--;
+    if(m_nbCrew==0)
+    {
+        m_isRepairing=false;
+    }
+}
+
+gf::Vector2f Room::getTransPos(Room* withRoom){
     gf::Vector2f realSize = (m_size + 1.0f) * TILE_SPRITE_SIZE;
     gf::Vector2f worldSize = (m_size + 1.0f) * TILE_SIZE;
     gf::Vector2f scale = worldSize / realSize;
     
-    for (size_t i=0; i < m_roomTransPos.size(); i++) {
-        if(m_roomTransPos[i].roomId == roomId) {
-            gf::Vector2f result = m_position * TILE_SIZE - (0.5 * TILE_SIZE) + m_roomTransPos[i].transPos * TILE_SIZE * scale;
-            return result;
-        }
+    auto it = m_linkedPos.find(withRoom);
+    if(it != m_linkedPos.end()) {
+        return m_position * TILE_SIZE - (0.5 * TILE_SIZE) + it->second * TILE_SIZE * scale;
+    } else {
+        return {-1.0f, -1.0f};
     }
-    return {-1.0f, -1.0f};
+}
+
+gf::Vector2f Room::getRoomCenter() {
+    return (m_position * TILE_SIZE) + (m_size * TILE_SIZE / 2);
 }
 
 void Room::update(float dt) {

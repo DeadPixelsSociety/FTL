@@ -24,25 +24,36 @@
 #include <gf/EntityContainer.h>
 #include <gf/Message.h>
 #include <gf/Vector.h>
+#include <queue>
 
 #include "Crew.h"
 #include "Room.h"
 
-struct GraphRoom {
-    int id;
-    float dist;
-    struct GraphRoom *next;
+template<typename T, typename priority_t>
+struct PriorityQueue {
+    typedef std::pair<priority_t, T> PQElement;
+    std::priority_queue<PQElement, std::vector<PQElement>,
+    std::greater<PQElement>> elements;
+    
+    inline bool empty() const { return elements.empty(); }
+    
+    inline void put(T item, priority_t priority) {
+        elements.emplace(priority, item);
+    }
+    
+    inline T get() {
+        T best_item = elements.top().second;
+        elements.pop();
+        return best_item;
+    }
 };
 
 class Ship : public gf::Entity {
 public:
     Ship();
 
-    void addRoom(int id, gf::Vector2f size, gf::Vector2f position, const gf::Path &path);
+    void addRoom(gf::Vector2f size, gf::Vector2f position, const gf::Path &path);
     void addCrew(const gf::Path &path, Room* isInRoom);
-
-    Room* getRoom(int id);
-    Crew getCrew(int id);
     
     virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
@@ -55,14 +66,7 @@ public:
 private:
     void generateLevel();
     
-    // Path finding stuff using Dijkstra algo.
-    float min(float a, float b);
     std::vector<Room*> findPath(Room* startRoom, Room* endRoom);
-    GraphRoom* roomToGraphRoom(Room* room);
-    GraphRoom* addRoomToGraph(GraphRoom* anchor, GraphRoom* newRoom);
-    void loadGraph();
-    void iterDijkstra(float* dist, Room** prev, int current, int* dijkstra, int nbDone);
-    // End pathfinding stuff
 
 private:
     float m_timeElapsed;
@@ -71,8 +75,6 @@ private:
     std::vector<Crew> m_crew;
     
     Crew *m_crewToMove;
-    
-    std::vector<GraphRoom*> m_graph;
 };
 
 #endif // LOCAL_SHIP_H
