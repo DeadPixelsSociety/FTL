@@ -84,6 +84,8 @@ void Crew::setPathToRoom(std::vector<Room*> &pathRooms) {
     m_pathToRoom = pathRooms;
     m_isWalking = true;
 	m_isInRoomCenter = false;
+    m_arrivedToTranPos = false;
+    m_arrivedToCurrTransPos = false;
 }
 
 void Crew::walkToCenterRoom() {

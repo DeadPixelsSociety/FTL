@@ -90,7 +90,9 @@ gf::MessageStatus Ship::onLeftClicMouse(gf::Id type, gf::Message *msg){
         }
     } else {
         for(Room &room: m_rooms) {
-            if (room.isHit(leftClic->position) && !m_crewToMove->getCurrentRoom()->isHit(leftClic->position)) {
+            if (room.isHit(leftClic->position)
+                    && !m_crewToMove->getCurrentRoom()->isHit(leftClic->position)
+                    ) {
                 gf::Log::debug(gf::Log::General, "Room hited 2\n");
                 std::vector<Room*> roomPath = findPath(m_crewToMove->getCurrentRoom(), &room);
                 m_crewToMove->setPathToRoom(roomPath);
@@ -170,8 +172,8 @@ void Ship::generateLevel() {
     //          (higher value tells to A* Search that going from this room to the other cost more energy.
     //          It will so prefer a path or another.)
     // TODO: review the cost value!
-    m_rooms[0].addLinkedRoom(&m_rooms[1], {2.0f, 2.0f}, 2);
-    m_rooms[0].addLinkedRoom(&m_rooms[5], {2.0f, 8.0f}, 2);
+    m_rooms[0].addLinkedRoom(&m_rooms[1], {2.0f, 2.0f}, 1);
+    m_rooms[0].addLinkedRoom(&m_rooms[5], {2.0f, 8.0f}, 1);
     m_rooms[1].addLinkedRoom(&m_rooms[0], {26.0f, 2.0f}, 1);
     m_rooms[1].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 4);
     m_rooms[1].addLinkedRoom(&m_rooms[6], {8.0f, 2.0f}, 1);
