@@ -90,7 +90,7 @@ gf::MessageStatus Ship::onLeftClicMouse(gf::Id type, gf::Message *msg){
         }
     } else {
         for(Room &room: m_rooms) {
-            if (room.isHit(leftClic->position)) {
+            if (room.isHit(leftClic->position) && !m_crewToMove->getCurrentRoom()->isHit(leftClic->position)) {
                 gf::Log::debug(gf::Log::General, "Room hited 2\n");
                 std::vector<Room*> roomPath = findPath(m_crewToMove->getCurrentRoom(), &room);
                 m_crewToMove->setPathToRoom(roomPath);
@@ -207,7 +207,7 @@ std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
         }
         for (auto next : current->getLinkedRoom()) {
             double newCost = costSoFar[current] + next.second;
-            if (!costSoFar.count(next.first) || newCost < costSoFar[next.first]) {
+            if (0 != costSoFar.count(next.first) || newCost < costSoFar[next.first]) {
                 costSoFar[next.first] = newCost;
                 double priority = newCost + heuristic(next.first->getPos(), endRoom->getPos());
                 frontier.put(next.first, priority);
