@@ -33,7 +33,7 @@ public:
     void addLinkedRoom(Room* room, gf::Vector2f transitionPos, double cost);
 
     inline gf::Vector2f getPos() { return m_position; }
-    inline std::map<Room*, double> getLinkedRoom() { return m_linkedCost; }
+    inline std::map<Room*, std::pair<double, gf::Vector2f>> getLinkedRoom() { return m_linkedRoom; }
     inline void crewEnter() { m_nbCrew++; }
     void crewOut();
     inline void repare() { m_isRepairing = true; }
@@ -61,8 +61,7 @@ private:
     float m_timeRepair;
     float m_timeFailure;
     
-    std::map<Room*, gf::Vector2f> m_linkedPos;
-    std::map<Room*, double> m_linkedCost;
+    std::map<Room*, std::pair<double, gf::Vector2f>> m_linkedRoom;
 };
 
 #endif // LOCAL_ROOM_H

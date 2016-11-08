@@ -208,7 +208,7 @@ std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
             break;
         }
         for (auto next : current->getLinkedRoom()) {
-            double newCost = costSoFar[current] + next.second;
+            double newCost = costSoFar[current] + next.second.first;
             if (!costSoFar.count(next.first) || newCost < costSoFar[next.first]) {
                 costSoFar[next.first] = newCost;
                 double priority = newCost + heuristic(next.first->getPos(), endRoom->getPos());

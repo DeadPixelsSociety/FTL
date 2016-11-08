@@ -11,7 +11,6 @@ TO DO
 - [ ] Make a Menu screen
 - [ ] Make an end screen with score etc...
 - [ ] Update the to do list ;)
-- [ ] Fix pathfinding issue
+- [x] Fix pathfinding issue
 - [ ] Delete the PriorityQueue class?
-- [ ] std::pair for Room* link
-- [x] Fix issue
+- [x] std::pair for Room* link

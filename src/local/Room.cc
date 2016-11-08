@@ -63,8 +63,7 @@ void Room::failure() {
 }
 
 void Room::addLinkedRoom(Room* room, gf::Vector2f transitionPos, double cost) {
-    m_linkedPos.emplace(room, transitionPos);
-    m_linkedCost.emplace(room, cost);
+    m_linkedRoom.emplace(room, std::make_pair(cost, transitionPos));
 }
 
 void Room::crewOut() {
@@ -80,9 +79,9 @@ gf::Vector2f Room::getTransPos(Room* withRoom){
     gf::Vector2f worldSize = (m_size + 1.0f) * TILE_SIZE;
     gf::Vector2f scale = worldSize / realSize;
     
-    auto it = m_linkedPos.find(withRoom);
-    if(it != m_linkedPos.end()) {
-        return m_position * TILE_SIZE - (0.5 * TILE_SIZE) + it->second * TILE_SIZE * scale;
+    auto it = m_linkedRoom.find(withRoom);
+    if(it != m_linkedRoom.end()) {
+        return m_position * TILE_SIZE - (0.5 * TILE_SIZE) + it->second.second * TILE_SIZE * scale;
     } else {
         return {-1.0f, -1.0f};
     }
