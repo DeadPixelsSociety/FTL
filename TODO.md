@@ -11,3 +11,4 @@ TO DO
 - [ ] Make a Menu screen
 - [ ] Make an end screen with score etc...
 - [ ] Update the to do list ;)
+- [ ] Fix pathfinding issue
