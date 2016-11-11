@@ -68,6 +68,9 @@ int main() {
     Score score;
     mainEntities.addEntity(score);
 
+    // no window.isFullscreen() maybe another method ?
+    bool fullscreen=false;
+
     gf::Clock clock;
     while (window.isOpen()) {
         // input
@@ -76,23 +79,29 @@ int main() {
         while (window.pollEvent(event)) {
             actions.update(event);
             views.update(event);
-
             switch(event.type) {
-            case gf::EventType::MouseButtonReleased:
-                if (event.mouseButton.button == gf::MouseButton::Left) {
-                    LeftClicMouse message;
-                    message.position = renderer.mapPixelToCoords(event.mouseButton.coords, shipView);
-                    gMessageManager().sendMessage(&message);
-                }
-                else if (event.mouseButton.button == gf::MouseButton::Right) {
-                    RightClicMouse message;
-                    gMessageManager().sendMessage(&message);
-                }
-                break;
+                case gf::EventType::MouseButtonReleased:
+                    if (event.mouseButton.button == gf::MouseButton::Left) {
+                        LeftClicMouse message;
+                        message.position = renderer.mapPixelToCoords(event.mouseButton.coords, shipView);
+                        gMessageManager().sendMessage(&message);
+                    }
+                    else if (event.mouseButton.button == gf::MouseButton::Right) {
+                        RightClicMouse message;
+                        gMessageManager().sendMessage(&message);
+                    }
+                    break;
+                case gf::EventType::KeyReleased:
+                    if (event.key.keycode == gf::Keycode::F) {
+                        window.setFullscreen(!fullscreen);
+                        // no window.isFullscreen();
+                        fullscreen=!fullscreen;
+                    }
+                    break;
 
-            default:
-                break;
-            }
+                default:
+                    break;
+                }
         }
 
         if (closeWindowAction.isActive()) {
