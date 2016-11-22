@@ -213,16 +213,16 @@ void Ship::generateLevel() {
     m_rooms[0].addLinkedRoom(&m_rooms[1], {2.0f, 2.0f}, 1);
     m_rooms[0].addLinkedRoom(&m_rooms[5], {2.0f, 8.0f}, 1);
     m_rooms[1].addLinkedRoom(&m_rooms[0], {26.0f, 2.0f}, 1);
-    m_rooms[1].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 4);
+    m_rooms[1].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 1);
     m_rooms[1].addLinkedRoom(&m_rooms[6], {8.0f, 2.0f}, 1);
-    m_rooms[2].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 4);
+    m_rooms[2].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 1);
     m_rooms[2].addLinkedRoom(&m_rooms[3], {4.0f, 4.0f}, 1);
     m_rooms[3].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 1);
     m_rooms[3].addLinkedRoom(&m_rooms[4], {2.0f, 4.0f}, 1);
     m_rooms[4].addLinkedRoom(&m_rooms[3], {4.0f, 2.0f}, 1);
-    m_rooms[4].addLinkedRoom(&m_rooms[5], {4.0f, 4.0f}, 4);
+    m_rooms[4].addLinkedRoom(&m_rooms[5], {4.0f, 4.0f}, 1);
     m_rooms[5].addLinkedRoom(&m_rooms[0], {26.0f, 2.0f}, 1);
-    m_rooms[5].addLinkedRoom(&m_rooms[4], {2.0f, 2.0f}, 4);
+    m_rooms[5].addLinkedRoom(&m_rooms[4], {2.0f, 2.0f}, 1);
     m_rooms[6].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 1);
 
     addCrew("pirategirl2.png", &m_rooms[0]);

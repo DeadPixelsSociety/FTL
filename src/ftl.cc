@@ -30,6 +30,7 @@
 #include "local/Score.h"
 #include "local/Ship.h"
 #include "local/Singletons.h"
+#include "ResourceManager.h"
 
 #include "config.h"
 
@@ -40,7 +41,7 @@ int main() {
     gf::RenderWindow renderer(window);
 
     gf::SingletonStorage<gf::MessageManager> storageForMessageManager(gMessageManager);
-    gf::SingletonStorage<gf::ResourceManager> storageForResourceManager(gResourceManager);
+    gf::SingletonStorage<ResourceManager> storageForResourceManager(gResourceManager);
     gf::SingletonStorage<gf::Random> storageForRandom(gRandom);
 
     gResourceManager().addSearchDir(FTL_DATA_DIR);
@@ -60,6 +61,10 @@ int main() {
     closeWindowAction.addCloseControl();
     closeWindowAction.addKeycodeKeyControl(gf::Keycode::Escape);
     actions.addAction(closeWindowAction);
+    
+    gf::Action muteMusic("Mute music");
+    muteMusic.addKeycodeKeyControl(gf::Keycode::M);
+    actions.addAction(muteMusic);
 
     gf::Action fullscreenAction("Fullscreen");
     fullscreenAction.addKeycodeKeyControl(gf::Keycode::F);
@@ -71,6 +76,10 @@ int main() {
 
     Score score;
     mainEntities.addEntity(score);
+    
+    sf::Sound backgroundMusic;
+    backgroundMusic.setBuffer(gResourceManager().getSound("music/ObservingTheStar-Redit.ogg"));
+    backgroundMusic.play();
 
     // no window.isFullscreen() maybe another method ?
     bool fullscreen=false;
@@ -109,6 +118,10 @@ int main() {
 
         if (closeWindowAction.isActive()) {
             window.close();
+        }
+        
+        if (muteMusic.isActive()) {
+            backgroundMusic.getStatus() == sf::Sound::Playing ? backgroundMusic.pause() : backgroundMusic.play();
         }
 
         // update

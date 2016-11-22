@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 
 project(FTL VERSION 0.1.0)
 
-find_package(gf REQUIRED)
 include(GNUInstallDirs)
+
+find_package(gf REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SFML2 REQUIRED sfml-audio>=2.1)
 
 set(FTL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/ftl")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
@@ -31,6 +34,7 @@ target_include_directories(ftl
 
 target_link_libraries(ftl
     gf::gf0
+    ${SFML2_LIBRARIES}
 )
 
 install(
