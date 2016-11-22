@@ -61,6 +61,10 @@ int main() {
     closeWindowAction.addCloseControl();
     closeWindowAction.addKeycodeKeyControl(gf::Keycode::Escape);
     actions.addAction(closeWindowAction);
+    
+    gf::Action muteMusic("Mute music");
+    muteMusic.addKeycodeKeyControl(gf::Keycode::M);
+    actions.addAction(muteMusic);
 
     gf::EntityContainer mainEntities;
     Ship ship;
@@ -68,6 +72,10 @@ int main() {
 
     Score score;
     mainEntities.addEntity(score);
+    
+    sf::Sound backgroundMusic;
+    backgroundMusic.setBuffer(gResourceManager().getSound("music/ObservingTheStar-Redit.ogg"));
+    backgroundMusic.play();
 
     // no window.isFullscreen() maybe another method ?
     bool fullscreen=false;
@@ -107,6 +115,10 @@ int main() {
 
         if (closeWindowAction.isActive()) {
             window.close();
+        }
+        
+        if (muteMusic.isActive()) {
+            backgroundMusic.getStatus() == sf::Sound::Playing ? backgroundMusic.pause() : backgroundMusic.play();
         }
 
         // update
