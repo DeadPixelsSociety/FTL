@@ -62,6 +62,15 @@ void Room::failure() {
     m_failure = true;
 }
 
+/*
+ * addLinkedRoom(ptrLRoom, pos, cost);
+ * Add connection between rooms. Parameters are:
+ * ptrLRoom : A pointer to the linked room
+ * pos : position in room where the "checkpoint" will be place to the next room.
+ * cost : numeric value between the room and the linked room cost
+ *          (higher value tells to A* Search that going from this room to the other cost more energy.
+ *          It will so prefer a path or another.)
+*/
 void Room::addLinkedRoom(Room* room, gf::Vector2f transitionPos, double cost) {
     m_linkedRoom.emplace(room, std::make_pair(cost, transitionPos));
 }

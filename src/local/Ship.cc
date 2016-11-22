@@ -164,27 +164,19 @@ void Ship::generateLevel() {
     addRoom({13, 1}, {03.0f, 7.5f}, "corridor_bottom.png");
     addRoom({02, 2}, {05.0f, 3.5f}, "oxygen_room.png");
     
-    // addLinkedRoom(ptrLRoom, pos, cost);
-    // Add connection between rooms. Parameters are:
-    // ptrLRoom : A pointer to the linked room
-    // pos : position in room where the "checkpoint" will be place to the next room.
-    // cost : numeric value between the room and the linked room cost
-    //          (higher value tells to A* Search that going from this room to the other cost more energy.
-    //          It will so prefer a path or another.)
-    // TODO: review the cost value!
     m_rooms[0].addLinkedRoom(&m_rooms[1], {2.0f, 2.0f}, 1);
     m_rooms[0].addLinkedRoom(&m_rooms[5], {2.0f, 8.0f}, 1);
     m_rooms[1].addLinkedRoom(&m_rooms[0], {26.0f, 2.0f}, 1);
-    m_rooms[1].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 4);
+    m_rooms[1].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 1);
     m_rooms[1].addLinkedRoom(&m_rooms[6], {8.0f, 2.0f}, 1);
-    m_rooms[2].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 4);
+    m_rooms[2].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 1);
     m_rooms[2].addLinkedRoom(&m_rooms[3], {4.0f, 4.0f}, 1);
     m_rooms[3].addLinkedRoom(&m_rooms[2], {2.0f, 2.0f}, 1);
     m_rooms[3].addLinkedRoom(&m_rooms[4], {2.0f, 4.0f}, 1);
     m_rooms[4].addLinkedRoom(&m_rooms[3], {4.0f, 2.0f}, 1);
-    m_rooms[4].addLinkedRoom(&m_rooms[5], {4.0f, 4.0f}, 4);
+    m_rooms[4].addLinkedRoom(&m_rooms[5], {4.0f, 4.0f}, 1);
     m_rooms[5].addLinkedRoom(&m_rooms[0], {26.0f, 2.0f}, 1);
-    m_rooms[5].addLinkedRoom(&m_rooms[4], {2.0f, 2.0f}, 4);
+    m_rooms[5].addLinkedRoom(&m_rooms[4], {2.0f, 2.0f}, 1);
     m_rooms[6].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 1);
     
     addCrew("pirategirl2.png", &m_rooms[0]);

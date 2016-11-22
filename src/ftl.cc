@@ -30,6 +30,7 @@
 #include "local/Score.h"
 #include "local/Ship.h"
 #include "local/Singletons.h"
+#include "ResourceManager.h"
 
 #include "config.h"
 
@@ -40,7 +41,7 @@ int main() {
     gf::RenderWindow renderer(window);
 
     gf::SingletonStorage<gf::MessageManager> storageForMessageManager(gMessageManager);
-    gf::SingletonStorage<gf::ResourceManager> storageForResourceManager(gResourceManager);
+    gf::SingletonStorage<ResourceManager> storageForResourceManager(gResourceManager);
     gf::SingletonStorage<gf::Random> storageForRandom(gRandom);
 
     gResourceManager().addSearchDir(FTL_DATA_DIR);
