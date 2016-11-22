@@ -14,4 +14,4 @@ TO DO
 - [x] Fix pathfinding issue
 - [ ] Delete the PriorityQueue class?
 - [x] std::pair for Room* link
-- [ ] Add sound support using SFML Lib
+- [x] Add sound support using SFML Lib

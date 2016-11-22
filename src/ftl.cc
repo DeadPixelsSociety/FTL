@@ -65,6 +65,14 @@ int main() {
     gf::Action muteMusic("Mute music");
     muteMusic.addKeycodeKeyControl(gf::Keycode::M);
     actions.addAction(muteMusic);
+    
+//    gf::Action volumeUpMusic("Volume up music");
+//    volumeUpMusic.addKeycodeKeyControl(gf::Keycode::NumpadPlus);
+//    actions.addAction(volumeUpMusic);
+//
+//    gf::Action volumeDownMusic("Volume down music");
+//    volumeDownMusic.addKeycodeKeyControl(gf::Keycode::NumpadMinus);
+//    actions.addAction(volumeDownMusic);
 
     gf::EntityContainer mainEntities;
     Ship ship;
@@ -73,9 +81,9 @@ int main() {
     Score score;
     mainEntities.addEntity(score);
     
-    sf::Sound backgroundMusic;
-    backgroundMusic.setBuffer(gResourceManager().getSound("music/ObservingTheStar-Redit.ogg"));
-    backgroundMusic.play();
+    sf::Music* backgroundMusic = &gResourceManager().getMusic("music/ObservingTheStar-Redit.ogg");
+    backgroundMusic->play();
+    backgroundMusic->setLoop(true);
 
     // no window.isFullscreen() maybe another method ?
     bool fullscreen=false;
@@ -118,8 +126,16 @@ int main() {
         }
         
         if (muteMusic.isActive()) {
-            backgroundMusic.getStatus() == sf::Sound::Playing ? backgroundMusic.pause() : backgroundMusic.play();
+            backgroundMusic->getStatus() == sf::Music::Playing ? backgroundMusic->pause() : backgroundMusic->play();
         }
+    
+//        if (volumeUpMusic.isActive()) {
+//            backgroundMusic->setVolume(backgroundMusic->getVolume() + 0.1f);
+//        }
+//
+//        if (volumeDownMusic.isActive()) {
+//            backgroundMusic->setVolume(backgroundMusic->getVolume() - 0.1f);
+//        }
 
         // update
         auto dt = clock.restart().asSeconds();

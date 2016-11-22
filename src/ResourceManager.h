@@ -33,19 +33,34 @@ namespace {
         }
     };
     
+    template<typename T>
+    class MusicLoader {
+    public:
+        std::unique_ptr<T> operator()(const gf::Path& filename) {
+            std::unique_ptr<T> ptr(new T);
+            bool loaded = ptr->openFromFile(filename.string());
+            return loaded ? std::move(ptr) : nullptr;
+        }
+    };
+    
 }
 
 class ResourceManager : public gf::ResourceManager {
 public:
     
-    ResourceManager() : gf::ResourceManager(), m_sounds(ResourceLoader<sf::SoundBuffer>()) {}
+    ResourceManager() : gf::ResourceManager(), m_sounds(ResourceLoader<sf::SoundBuffer>()), m_musics(MusicLoader<sf::Music>()) {}
     
     sf::SoundBuffer& getSound(const gf::Path &path) {
         return m_sounds.getResource(*this, path);
     }
+    
+    sf::Music& getMusic(const gf::Path &path) {
+        return m_musics.getResource(*this, path);
+    }
 
 private:
     gf::ResourceCache<sf::SoundBuffer> m_sounds;
+    gf::ResourceCache<sf::Music> m_musics;
 };
 
 #endif // SOUNDRESOURCEMANAGER_H
