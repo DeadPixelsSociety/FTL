@@ -36,6 +36,7 @@ Ship::Ship()
     gMessageManager().registerHandler<RightClicMouse>(&Ship::onRightClicMouse, this);
     gMessageManager().registerHandler<RoomFailure>(&Ship::onRoomFailure, this);
     gMessageManager().registerHandler<GameOver>(&Ship::onGameOver, this);
+    gMessageManager().registerHandler<Fire>(&Ship::onFire, this);
     generateLevel();
 }
 
@@ -51,19 +52,27 @@ void Ship::update(float dt) {
     for(Room &room: m_rooms) {
         room.update(dt);
     }
-    
+
     for(Crew &crew: m_crew) {
         crew.update(dt);
     }
-    
+
     m_timeElapsed += dt;
 
     // If a failure must be launched
     if (m_timeElapsed >= COOLDOWN_FAILURE) {
-      m_timeElapsed -= COOLDOWN_FAILURE;
+        m_timeElapsed -= COOLDOWN_FAILURE;
 
-      RoomFailure message;
-      gMessageManager().sendMessage(&message);
+
+        float rand = gRandom().computeUniformFloat(0.0f, 100.0f);
+        if (rand <= 10.0f) {
+            Fire message;
+            gMessageManager().sendMessage(&message);
+        }
+        else {
+            RoomFailure message;
+            gMessageManager().sendMessage(&message);
+        }
     }
 }
 
@@ -71,7 +80,7 @@ void Ship::render(gf::RenderTarget &target) {
     for(Room &room: m_rooms) {
         room.render(target);
     }
-    
+
     for(Crew &crew: m_crew) {
         crew.render(target);
     }
@@ -100,7 +109,7 @@ gf::MessageStatus Ship::onLeftClicMouse(gf::Id type, gf::Message *msg){
             }
         }
     }
-    
+
     return gf::MessageStatus::Keep;
 }
 
@@ -142,7 +151,7 @@ gf::MessageStatus Ship::onRoomFailure(gf::Id type, gf::Message *msg){
     return gf::MessageStatus::Keep;
 }
 
-gf::MessageStatus Ship::onGameOver(gf::Id type, gf::Message *msg){
+gf::MessageStatus Ship::onGameOver(gf::Id type, gf::Message *msg) {
     UNUSED(msg);
     assert(type == GameOver::type);
 
@@ -154,6 +163,35 @@ gf::MessageStatus Ship::onGameOver(gf::Id type, gf::Message *msg){
     return gf::MessageStatus::Keep;
 }
 
+gf::MessageStatus Ship::onFire(gf::Id type, gf::Message *msg) {
+    UNUSED(msg);
+    assert(type == Fire::type);
+
+    // Check if a room is ok
+    bool isOk = false;
+    for (Room &room: m_rooms) {
+        if (!room.isInFire() && !room.hasCrew()) {
+            isOk = true;
+            break;
+        }
+    }
+    if (!isOk) {
+        return gf::MessageStatus::Keep;
+    }
+
+    // Select random room
+    unsigned random = gRandom().computeUniformInteger<unsigned>(0, m_rooms.size() - 1);
+    while (m_rooms[random].hasCrew() || m_rooms[random].isInFire()) {
+        random = gRandom().computeUniformInteger<unsigned>(0, m_rooms.size() - 1);
+    }
+
+    gf::Log::debug(gf::Log::General, "Room fire %d\n", random);
+    m_rooms[random].fire();
+
+    return gf::MessageStatus::Keep;
+}
+
+
 void Ship::generateLevel() {
     // Add all ship's rooms
     addRoom({04, 4}, {15.0f, 3.0f}, "cockpit.png");
@@ -163,7 +201,7 @@ void Ship::generateLevel() {
     addRoom({02, 2}, {00.5f, 6.5f}, "engine_bottom.png");
     addRoom({13, 1}, {03.0f, 7.5f}, "corridor_bottom.png");
     addRoom({02, 2}, {05.0f, 3.5f}, "oxygen_room.png");
-    
+
     // addLinkedRoom(ptrLRoom, pos, cost);
     // Add connection between rooms. Parameters are:
     // ptrLRoom : A pointer to the linked room
@@ -186,7 +224,7 @@ void Ship::generateLevel() {
     m_rooms[5].addLinkedRoom(&m_rooms[0], {26.0f, 2.0f}, 1);
     m_rooms[5].addLinkedRoom(&m_rooms[4], {2.0f, 2.0f}, 4);
     m_rooms[6].addLinkedRoom(&m_rooms[1], {4.0f, 2.0f}, 1);
-    
+
     addCrew("pirategirl2.png", &m_rooms[0]);
     addCrew("pirate_m2.png", &m_rooms[3]);
 }
@@ -201,7 +239,7 @@ std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
     frontier.put(startRoom, 0);
     cameFrom[startRoom] = startRoom;
     costSoFar[startRoom] = 0;
-    
+
     while(!frontier.empty()) {
         Room* current = frontier.get();
         if (current == endRoom) {
@@ -220,20 +258,20 @@ std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
     /////////////////////////
     // End of A* algorithm //
     /////////////////////////
-    
+
     //////////////////////////////////
     // Rebuild the path
     // Convert the path for crew.
     //////////////////////////////////
     std::vector<Room*> roomPath;
     Room* current = endRoom;
-    
+
     roomPath.push_back(current);
     while (current != startRoom) {
         current = cameFrom[current];
         roomPath.push_back(current);
     }
     roomPath.pop_back();
-    
+
     return roomPath;
 }

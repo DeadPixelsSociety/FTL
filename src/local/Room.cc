@@ -26,6 +26,12 @@
 #include "Params.h"
 #include "Singletons.h"
 
+static constexpr float MIN_TEMPERATURE = 18.0f; // Celsuis
+static constexpr float FLOOR_TEMPERATURE = 50.0f; // Celsuis
+static constexpr float STEP_TEMPERATURE = 2.0f; // Celsuis
+static constexpr float FIRE_FACTOR = 4.0f;
+static constexpr float FIRE_FACTOR_BASE = 2.0f;
+
 Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path)
 : m_size(size)
 , m_position(position)
@@ -34,6 +40,7 @@ Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path)
 , m_red(false)
 , m_nbCrew(0)
 , m_isRepairing(false)
+, m_temperature(MIN_TEMPERATURE)
 , m_timeBlink(0.0f)
 , m_timeRepair(0.0f)
 , m_timeFailure(0.0f) {
@@ -53,6 +60,10 @@ bool Room::isFailure() const {
     return m_failure;
 }
 
+bool Room::isInFire() const {
+    return m_temperature >= FLOOR_TEMPERATURE;
+}
+
 void Room::crewMoveTo(Room &room) {
     crewOut();
     room.crewEnter();
@@ -60,6 +71,10 @@ void Room::crewMoveTo(Room &room) {
 
 void Room::failure() {
     m_failure = true;
+}
+
+void Room::fire() {
+    m_temperature = FLOOR_TEMPERATURE;
 }
 
 void Room::addLinkedRoom(Room* room, gf::Vector2f transitionPos, double cost) {
@@ -78,7 +93,7 @@ gf::Vector2f Room::getTransPos(Room* withRoom){
     gf::Vector2f realSize = (m_size + 1.0f) * TILE_SPRITE_SIZE;
     gf::Vector2f worldSize = (m_size + 1.0f) * TILE_SIZE;
     gf::Vector2f scale = worldSize / realSize;
-    
+
     auto it = m_linkedRoom.find(withRoom);
     if(it != m_linkedRoom.end()) {
         return m_position * TILE_SIZE - (0.5 * TILE_SIZE) + it->second.second * TILE_SIZE * scale;
@@ -113,6 +128,26 @@ void Room::update(float dt) {
         m_timeRepair = 0.0f;
     }
 
+    // Check the temperature statut
+    float factor = 0.0f;
+    if (isInFire()) {
+        factor = FIRE_FACTOR_BASE;
+    }
+    else {
+        factor = -FIRE_FACTOR_BASE;
+    }
+    for (auto it = m_linkedRoom.begin(); it != m_linkedRoom.end(); ++it) {
+        Room *currentRoom = it->first;
+        if (currentRoom->isInFire()) {
+            factor += FIRE_FACTOR;
+        }
+    }
+    m_temperature += STEP_TEMPERATURE * factor * dt;
+
+    if (m_temperature < MIN_TEMPERATURE) {
+        m_temperature = MIN_TEMPERATURE;
+    }
+
     if (m_timeFailure >= COOLDOWN_DESTROY) {
         GameOver message;
         gMessageManager().sendMessage(&message);
@@ -138,6 +173,10 @@ void Room::render(gf::RenderTarget &target) {
     sprite.setPosition(m_position * TILE_SIZE - (0.5 * TILE_SIZE));
 
     target.draw(sprite);
+
+    if (isInFire()) {
+        gf::Log::debug(gf::Log::General, "Room on fire!\n");
+    }
 
     if (hasCrew()) {
         gf::Vector2f position(m_position * TILE_SIZE);

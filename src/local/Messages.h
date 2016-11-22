@@ -34,6 +34,10 @@ struct RoomFailure : public gf::Message {
   static const gf::Id type = "RoomFailure"_id; // compile-time definition
 };
 
+struct Fire : public gf::Message {
+  static const gf::Id type = "Fire"_id; // compile-time definition
+};
+
 struct GameOver : public gf::Message {
   static const gf::Id type = "GameOver"_id; // compile-time definition
 };
