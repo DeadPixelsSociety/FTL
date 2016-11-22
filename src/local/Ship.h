@@ -34,13 +34,13 @@ struct PriorityQueue {
     typedef std::pair<priority_t, T> PQElement;
     std::priority_queue<PQElement, std::vector<PQElement>,
     std::greater<PQElement>> elements;
-    
+
     inline bool empty() const { return elements.empty(); }
-    
+
     inline void put(T item, priority_t priority) {
         elements.emplace(priority, item);
     }
-    
+
     inline T get() {
         T best_item = elements.top().second;
         elements.pop();
@@ -54,7 +54,7 @@ public:
 
     void addRoom(gf::Vector2f size, gf::Vector2f position, const gf::Path &path);
     void addCrew(const gf::Path &path, Room* isInRoom);
-    
+
     virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
 
@@ -62,18 +62,19 @@ public:
     gf::MessageStatus onRightClicMouse(gf::Id type, gf::Message *msg);
     gf::MessageStatus onRoomFailure(gf::Id type, gf::Message *msg);
     gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onFire(gf::Id type, gf::Message *msg);
 
 private:
     void generateLevel();
-    
+
     std::vector<Room*> findPath(Room* startRoom, Room* endRoom);
 
 private:
     float m_timeElapsed;
-    
+
     std::vector<Room> m_rooms;
     std::vector<Crew> m_crew;
-    
+
     Crew *m_crewToMove;
 };
 

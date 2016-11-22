@@ -29,6 +29,7 @@ public:
     bool isHit(gf::Vector2f point) const;
     bool hasCrew() const;
     bool isFailure() const;
+    bool isInFire() const;
 
     void addLinkedRoom(Room* room, gf::Vector2f transitionPos, double cost);
 
@@ -39,9 +40,10 @@ public:
     inline void repare() { m_isRepairing = true; }
     gf::Vector2f getTransPos(Room* withRoom);
     gf::Vector2f getRoomCenter();
-    
+
     void crewMoveTo(Room &room);
     void failure();
+    void fire();
 
     virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
@@ -50,17 +52,18 @@ private:
     gf::Vector2f m_size;
     gf::Vector2f m_position;
     gf::Texture &m_texture;
-    
+
     bool m_failure;
     bool m_red;
 
     unsigned m_nbCrew;
     bool m_isRepairing;
-    
+
+    float m_temperature;
     float m_timeBlink;
     float m_timeRepair;
     float m_timeFailure;
-    
+
     std::map<Room*, std::pair<double, gf::Vector2f>> m_linkedRoom;
 };
 
