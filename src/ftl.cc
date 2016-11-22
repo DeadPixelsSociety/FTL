@@ -61,6 +61,10 @@ int main() {
     closeWindowAction.addKeycodeKeyControl(gf::Keycode::Escape);
     actions.addAction(closeWindowAction);
 
+    gf::Action fullscreenAction("Fullscreen");
+    fullscreenAction.addKeycodeKeyControl(gf::Keycode::F);
+    actions.addAction(fullscreenAction);
+
     gf::EntityContainer mainEntities;
     Ship ship;
     mainEntities.addEntity(ship);
@@ -91,17 +95,16 @@ int main() {
                         gMessageManager().sendMessage(&message);
                     }
                     break;
-                case gf::EventType::KeyReleased:
-                    if (event.key.keycode == gf::Keycode::F) {
-                        window.setFullscreen(!fullscreen);
-                        // no window.isFullscreen();
-                        fullscreen=!fullscreen;
-                    }
-                    break;
 
                 default:
                     break;
                 }
+        }
+
+        if (fullscreenAction.isActive()) {
+            window.setFullscreen(!fullscreen);
+            // no window.isFullscreen();
+            fullscreen=!fullscreen;
         }
 
         if (closeWindowAction.isActive()) {
