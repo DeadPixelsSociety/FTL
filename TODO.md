@@ -6,8 +6,7 @@ TO DO
 - [ ] Add new events (message)
 - [ ] Change spriteURL.txt to be a Licence file for arts
 - [x] Create the score system
-- [ ] Handle score with the GameOver event
-- [ ] Upgrade the GameOver end functions
+- [x] Handle score with the GameOver event
 - [ ] Make a Menu screen
 - [ ] Make an end screen with score etc...
 - [ ] Update the to do list ;)
