@@ -21,11 +21,13 @@
 #include <gf/Text.h>
 
 #include "Singletons.h"
+#include "Messages.h"
+#include "Params.h"
 
 Score::Score()
 : m_score(0.0f)
 , m_font(gResourceManager().getFont("jupiter.ttf")) {
-
+    gMessageManager().registerHandler<GameOver>(&Score::onGameOver, this);
 }
 
 void Score::update(float dt) {
@@ -37,4 +39,13 @@ void Score::render(gf::RenderTarget &target) {
     text.setPosition({0.0f, 0.0f});
     text.setColor(gf::Color::White);
     target.draw(text);
+}
+
+gf::MessageStatus Score::onGameOver(gf::Id type, gf::Message *msg) {
+    UNUSED(msg);
+    assert(type == GameOver::type);
+    
+    m_score = 0.0;
+    
+    return gf::MessageStatus::Keep;
 }

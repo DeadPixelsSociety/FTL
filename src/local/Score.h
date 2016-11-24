@@ -20,6 +20,7 @@
 
 #include <gf/Entity.h>
 #include <gf/Font.h>
+#include <gf/Message.h>
 
 class Score: public gf::Entity {
 public:
@@ -27,7 +28,9 @@ public:
 
     virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
-
+    
+    gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
+    
 private:
     double m_score;
     gf::Font &m_font;
