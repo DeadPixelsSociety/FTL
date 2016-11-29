@@ -66,13 +66,13 @@ int main() {
     muteMusic.addKeycodeKeyControl(gf::Keycode::M);
     actions.addAction(muteMusic);
     
-//    gf::Action volumeUpMusic("Volume up music");
-//    volumeUpMusic.addKeycodeKeyControl(gf::Keycode::NumpadPlus);
-//    actions.addAction(volumeUpMusic);
-//
-//    gf::Action volumeDownMusic("Volume down music");
-//    volumeDownMusic.addKeycodeKeyControl(gf::Keycode::NumpadMinus);
-//    actions.addAction(volumeDownMusic);
+    gf::Action volumeUpMusic("Volume up music");
+    volumeUpMusic.addKeycodeKeyControl(gf::Keycode::NumpadPlus);
+    actions.addAction(volumeUpMusic);
+
+    gf::Action volumeDownMusic("Volume down music");
+    volumeDownMusic.addKeycodeKeyControl(gf::Keycode::NumpadMinus);
+    actions.addAction(volumeDownMusic);
 
     gf::Action fullscreenAction("Fullscreen");
     fullscreenAction.addKeycodeKeyControl(gf::Keycode::F);
@@ -120,7 +120,6 @@ int main() {
 
         if (fullscreenAction.isActive()) {
             window.setFullscreen(!fullscreen);
-            // no window.isFullscreen();
             fullscreen=!fullscreen;
         }
 
@@ -132,13 +131,13 @@ int main() {
             backgroundMusic->getStatus() == sf::Music::Playing ? backgroundMusic->pause() : backgroundMusic->play();
         }
     
-//        if (volumeUpMusic.isActive()) {
-//            backgroundMusic->setVolume(backgroundMusic->getVolume() + 0.1f);
-//        }
-//
-//        if (volumeDownMusic.isActive()) {
-//            backgroundMusic->setVolume(backgroundMusic->getVolume() - 0.1f);
-//        }
+        if (volumeUpMusic.isActive()) {
+            backgroundMusic->setVolume(backgroundMusic->getVolume() + 10.0f);
+        }
+
+        if (volumeDownMusic.isActive()) {
+            backgroundMusic->setVolume(backgroundMusic->getVolume() - 10.0f);
+        }
 
         // update
         auto dt = clock.restart().asSeconds();
