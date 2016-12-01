@@ -3,6 +3,7 @@ A simple "Faster Than Light" clone!
 
 ## Required libraries
 - GF (https://github.com/GamedevFramework/gf)
+- SFML Audio
 
 ## Build & run
 ```
