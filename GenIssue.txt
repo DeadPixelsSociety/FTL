@@ -1,4 +1,0 @@
-Bug pathfinding avec 2 crew dans la même pièce
-1. Placer les 2 crews dans la même pièce
-2. Envoyer un crew dans une autre pièce
-3. Avant qu'il finisse son déplacement, changer son pièce final
