@@ -17,6 +17,8 @@
 
 #include "Room.h"
 
+#include <iostream>
+
 #include <gf/AnimatedSprite.h>
 #include <gf/RenderTarget.h>
 #include <gf/Sprite.h>
@@ -28,8 +30,8 @@
 #include "Singletons.h"
 
 static constexpr float MIN_TEMPERATURE = 18.0f; // Celsuis
-static constexpr float FLOOR_TEMPERATURE = 50.0f; // Celsuis
-static constexpr float MAX_TEMPERATURE = 200.0f; // Celsuis
+static constexpr float FLOOR_TEMPERATURE = 100.0f; // Celsuis
+static constexpr float MAX_TEMPERATURE = 500.0f; // Celsuis
 static constexpr float STEP_TEMPERATURE = 2.0f; // Celsuis
 static constexpr float FIRE_FACTOR = 4.0f;
 static constexpr float FIRE_FACTOR_BASE = 2.0f;
@@ -137,6 +139,7 @@ void Room::update(float dt) {
         }
     }
 
+    // Manage the fix of failure
     if(m_isRepairing && m_failure) {
         m_timeRepair += dt;
         if (m_timeRepair >= COOLDOWN_REPAIR) {
@@ -151,18 +154,24 @@ void Room::update(float dt) {
 
     // Check the temperature statut
     float factor = 0.0f;
-    if (isInFire()) {
-        factor = FIRE_FACTOR_BASE;
-    }
-    else {
-        factor = -FIRE_FACTOR_BASE;
-    }
-    for (auto it = m_linkedRoom.begin(); it != m_linkedRoom.end(); ++it) {
-        Room *currentRoom = it->first;
-        if (currentRoom->isInFire()) {
-            factor += FIRE_FACTOR;
+    if (!m_isRepairing) {
+        if (isInFire()) {
+            factor = FIRE_FACTOR_BASE;
+        }
+        else {
+            factor = -FIRE_FACTOR_BASE;
+        }
+        for (auto it = m_linkedRoom.begin(); it != m_linkedRoom.end(); ++it) {
+            Room *currentRoom = it->first;
+            if (currentRoom->isInFire()) {
+                factor += FIRE_FACTOR;
+            }
         }
     }
+    else {
+        factor = -10.0f;
+    }
+
     m_temperature += STEP_TEMPERATURE * factor * dt;
 
     if (m_temperature < MIN_TEMPERATURE) {
@@ -174,6 +183,7 @@ void Room::update(float dt) {
         gMessageManager().sendMessage(&message);
     }
 
+    // Manage the fixing of fire
     if (isInFire()) {
         m_fireAnimation.update(dt);
         if (m_temperature >= MAX_TEMPERATURE) {
