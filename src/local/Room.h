@@ -18,6 +18,7 @@
 #ifndef LOCAL_ROOM_H
 #define LOCAL_ROOM_H
 
+#include <gf/Animation.h>
 #include <gf/Entity.h>
 #include <gf/Texture.h>
 #include <gf/Vector.h>
@@ -65,6 +66,7 @@ private:
     float m_timeFailure;
 
     std::map<Room*, std::pair<double, gf::Vector2f>> m_linkedRoom;
+    gf::Animation m_fireAnimation;
 };
 
 #endif // LOCAL_ROOM_H

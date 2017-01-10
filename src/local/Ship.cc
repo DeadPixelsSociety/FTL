@@ -65,7 +65,7 @@ void Ship::update(float dt) {
 
 
         float rand = gRandom().computeUniformFloat(0.0f, 100.0f);
-        if (rand <= 10.0f) {
+        if (rand <= 200.0f) {
             Fire message;
             gMessageManager().sendMessage(&message);
         }
@@ -159,6 +159,7 @@ gf::MessageStatus Ship::onGameOver(gf::Id type, gf::Message *msg) {
     m_crew.clear();
     m_crewToMove = nullptr;
     generateLevel();
+    m_timeElapsed = 0.0f;
 
     return gf::MessageStatus::Keep;
 }

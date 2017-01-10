@@ -17,6 +17,7 @@
 
 #include "Room.h"
 
+#include <gf/AnimatedSprite.h>
 #include <gf/RenderTarget.h>
 #include <gf/Sprite.h>
 #include <gf/Log.h>
@@ -28,9 +29,14 @@
 
 static constexpr float MIN_TEMPERATURE = 18.0f; // Celsuis
 static constexpr float FLOOR_TEMPERATURE = 50.0f; // Celsuis
+static constexpr float MAX_TEMPERATURE = 200.0f; // Celsuis
 static constexpr float STEP_TEMPERATURE = 2.0f; // Celsuis
 static constexpr float FIRE_FACTOR = 4.0f;
 static constexpr float FIRE_FACTOR_BASE = 2.0f;
+static constexpr float FIRE_SIZE_W = 400;
+static constexpr float FIRE_SIZE_H = 500;
+static constexpr float SPRITESHEET_FIRE_SIZE_W = 1600;
+static constexpr float SPRITESHEET_FIRE_SIZE_H = 500;
 
 Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path)
 : m_size(size)
@@ -44,6 +50,12 @@ Room::Room(gf::Vector2f size, gf::Vector2f position, const gf::Path &path)
 , m_timeBlink(0.0f)
 , m_timeRepair(0.0f)
 , m_timeFailure(0.0f) {
+    gf::Texture& texture = gResourceManager().getTexture("fire-spritesheet.png");
+    texture.setSmooth();
+
+    for (unsigned i = 0; i < 4; ++i) {
+        m_fireAnimation.addFrame(texture, { i / 4.0f, 0.0f, 0.25f, 1.0f }, 1.0f);
+    }
 }
 
 bool Room::isHit(gf::Vector2f point) const {
@@ -160,7 +172,14 @@ void Room::update(float dt) {
     if (m_timeFailure >= COOLDOWN_DESTROY) {
         GameOver message;
         gMessageManager().sendMessage(&message);
-        gf::Log::debug(gf::Log::General, "Destroy them all\n");
+    }
+
+    if (isInFire()) {
+        m_fireAnimation.update(dt);
+        if (m_temperature >= MAX_TEMPERATURE) {
+            GameOver message;
+            gMessageManager().sendMessage(&message);
+        }
     }
 }
 
@@ -184,7 +203,17 @@ void Room::render(gf::RenderTarget &target) {
     target.draw(sprite);
 
     if (isInFire()) {
-        gf::Log::debug(gf::Log::General, "Room on fire!\n");
+        gf::Vector2f position(m_position * TILE_SIZE);
+        position = position + (m_size * TILE_SIZE / 2);
+        gf::AnimatedSprite sprite;
+
+        sprite.setAnimation(m_fireAnimation);
+        sprite.setPosition(position);
+        sprite.setAnchor(gf::Anchor::Center);
+        sprite.setScale(0.10f);
+        sprite.setColor({1.0f, 1.0f, 1.0f, 0.25f + (m_temperature / MAX_TEMPERATURE)});
+
+        target.draw(sprite);
     }
 
     if (hasCrew()) {

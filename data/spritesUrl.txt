@@ -6,3 +6,6 @@ http://untamed.wild-refuge.net/rmxpresources.php?characters
 
 Music :
 http://opengameart.org/content/another-space-background-track
+
+Fire:
+https://openclipart.org/detail/225457/flamespritesheet02
