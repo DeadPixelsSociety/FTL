@@ -23,9 +23,9 @@
 
 #include "Singletons.h"
 
-static constexpr float FrameTime = 0.2f;
-static constexpr float Speed = 100.0f;
-static constexpr float PosTolerance = 0.8f;
+static constexpr float FRAMETIME = 0.2f;
+static constexpr float SPEED = 100.0f;
+static constexpr float POSTOLERANCE = 0.8f;
 
 static void loadSingleFrameAnimation(gf::Animation& animation, const gf::Path& path) {
     gf::Texture& texture = gResourceManager().getTexture(path);
@@ -49,7 +49,7 @@ static void loadMultiFrameAnimation(gf::Animation& animation, const gf::Path& pa
     }
 
     for (unsigned i = 0; i < 4; ++i) {
-        animation.addFrame(texture, { (i % 4) / 4.0f, directionOffset / 4.0f, 33.0f / 132.0f, 48.0f / 192.0f }, FrameTime);
+        animation.addFrame(texture, { i / 4.0f, directionOffset / 4.0f, 33.0f / 132.0f, 48.0f / 192.0f }, FRAMETIME);
     }
 }
 
@@ -91,19 +91,19 @@ void Crew::setPathToRoom(std::vector<Room*> &pathRooms) {
 void Crew::walkToCenterRoom() {
     if(!m_arrivedToCurrTransPos){
         m_walkToPos = m_isInRoom->getTransPos(m_pathToRoom.back());
-        if(m_walkToPos.x - PosTolerance < m_position.x
-                && m_walkToPos.x + PosTolerance > m_position.x
-                && m_walkToPos.y - PosTolerance < m_position.y
-                && m_walkToPos.y + PosTolerance > m_position.y) {
+        if(m_walkToPos.x - POSTOLERANCE < m_position.x
+                && m_walkToPos.x + POSTOLERANCE > m_position.x
+                && m_walkToPos.y - POSTOLERANCE < m_position.y
+                && m_walkToPos.y + POSTOLERANCE > m_position.y) {
             m_arrivedToCurrTransPos = true;
             m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
         }
     } else if(!m_arrivedToTranPos){
         m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
-        if(m_walkToPos.x - PosTolerance < m_position.x
-                && m_walkToPos.x + PosTolerance > m_position.x
-                && m_walkToPos.y - PosTolerance < m_position.y
-                && m_walkToPos.y + PosTolerance > m_position.y) {
+        if(m_walkToPos.x - POSTOLERANCE < m_position.x
+                && m_walkToPos.x + POSTOLERANCE > m_position.x
+                && m_walkToPos.y - POSTOLERANCE < m_position.y
+                && m_walkToPos.y + POSTOLERANCE > m_position.y) {
             m_arrivedToTranPos = true;
             m_walkToPos = m_isInRoom->getRoomCenter();
 			m_isInRoom->crewMoveTo(*m_pathToRoom.back());
@@ -112,16 +112,16 @@ void Crew::walkToCenterRoom() {
         }
     } else {
         m_walkToPos = m_isInRoom->getRoomCenter();
-		if ( m_walkToPos.x - PosTolerance < m_position.x
-			&& m_walkToPos.x + PosTolerance > m_position.x
-			&& m_walkToPos.y - PosTolerance < m_position.y
-			&& m_walkToPos.y + PosTolerance > m_position.y ) {
+		if ( m_walkToPos.x - POSTOLERANCE < m_position.x
+			&& m_walkToPos.x + POSTOLERANCE > m_position.x
+			&& m_walkToPos.y - POSTOLERANCE < m_position.y
+			&& m_walkToPos.y + POSTOLERANCE > m_position.y ) {
 			m_isInRoomCenter = true;
 		}
     }
     
-    bool xOk = (m_walkToPos.x - PosTolerance < m_position.x && m_walkToPos.x + PosTolerance > m_position.x);
-    bool yOk = (m_walkToPos.y - PosTolerance < m_position.y && m_walkToPos.y + PosTolerance > m_position.y);
+    bool xOk = (m_walkToPos.x - POSTOLERANCE < m_position.x && m_walkToPos.x + POSTOLERANCE > m_position.x);
+    bool yOk = (m_walkToPos.y - POSTOLERANCE < m_position.y && m_walkToPos.y + POSTOLERANCE > m_position.y);
     
     if(m_walkToPos.y > m_position.y && !yOk){
         m_direction = gf::Direction::Down;
@@ -146,10 +146,10 @@ void Crew::walkToCenterRoom() {
 void Crew::walkToTransitionRoom() {
     if(!m_arrivedToCurrTransPos){
         m_walkToPos = m_isInRoom->getTransPos(m_pathToRoom.back());
-        if(m_walkToPos.x - PosTolerance < m_position.x
-                && m_walkToPos.x + PosTolerance > m_position.x
-                && m_walkToPos.y - PosTolerance < m_position.y
-                && m_walkToPos.y + PosTolerance > m_position.y) {
+        if(m_walkToPos.x - POSTOLERANCE < m_position.x
+                && m_walkToPos.x + POSTOLERANCE > m_position.x
+                && m_walkToPos.y - POSTOLERANCE < m_position.y
+                && m_walkToPos.y + POSTOLERANCE > m_position.y) {
             m_arrivedToCurrTransPos = true;
             m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
         }
@@ -157,8 +157,8 @@ void Crew::walkToTransitionRoom() {
         m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
     }
     
-    bool xOk = (m_walkToPos.x - PosTolerance < m_position.x && m_walkToPos.x + PosTolerance > m_position.x);
-    bool yOk = (m_walkToPos.y - PosTolerance < m_position.y && m_walkToPos.y + PosTolerance > m_position.y);
+    bool xOk = (m_walkToPos.x - POSTOLERANCE < m_position.x && m_walkToPos.x + POSTOLERANCE > m_position.x);
+    bool yOk = (m_walkToPos.y - POSTOLERANCE < m_position.y && m_walkToPos.y + POSTOLERANCE > m_position.y);
     
     if(m_walkToPos.y > m_position.y && !yOk){
         m_direction = gf::Direction::Down;
@@ -184,7 +184,7 @@ void Crew::update(float dt) {
         } else {
             walkToCenterRoom();
         }
-        m_position += gf::displacement(m_direction) * Speed * dt;
+        m_position += gf::displacement(m_direction) * SPEED * dt;
     }
     
     // update animation
