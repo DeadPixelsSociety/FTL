@@ -36,9 +36,9 @@ static void loadSingleFrameAnimation(gf::Animation& animation, const gf::Path& p
 static void loadMultiFrameAnimation(gf::Animation& animation, const gf::Path& path, gf::Direction direction) {
     gf::Texture& texture = gResourceManager().getTexture(path);
     texture.setSmooth();
-    
+
     float directionOffset = 0.0f;
-    
+
     // This switch is based on the sprite, and as values aren't equal between anim.sprite and direction, it have to get this switch converter
     switch(direction) {
         case gf::Direction::Up: directionOffset = 3.0f; break;
@@ -65,14 +65,14 @@ Crew::Crew(const gf::Path &path, Room* isInRoom)
 , m_isInRoom(isInRoom)
 , m_pathToRoom()
 , m_walkToPos(-1.0f, -1.0f) {
-    
+
     // load animation
     loadSingleFrameAnimation(m_static, path);
     loadMultiFrameAnimation(m_running[static_cast<int>(gf::Direction::Up)], path, gf::Direction::Up);
     loadMultiFrameAnimation(m_running[static_cast<int>(gf::Direction::Down)], path, gf::Direction::Down);
     loadMultiFrameAnimation(m_running[static_cast<int>(gf::Direction::Left)], path, gf::Direction::Left);
     loadMultiFrameAnimation(m_running[static_cast<int>(gf::Direction::Right)], path, gf::Direction::Right);
-    
+
     m_isInRoom->crewEnter();
     m_position = m_isInRoom->getRoomCenter();
 }
@@ -137,7 +137,7 @@ void Crew::walkToCenterRoom() {
         if(m_isInRoomCenter){
             m_isWalking = false;
             m_walkToPos = {-1.0f, -1.0f};
-            if(m_isInRoom->isFailure()) {
+            if(m_isInRoom->isFailure() || m_isInRoom->isInFire()) {
                 m_isInRoom->repare();
             }
         }
@@ -156,7 +156,7 @@ void Crew::walkToTransitionRoom() {
     } else {
         m_walkToPos = m_pathToRoom.back()->getTransPos(m_isInRoom);
     }
-    
+
     bool xOk = (m_walkToPos.x - POSTOLERANCE < m_position.x && m_walkToPos.x + POSTOLERANCE > m_position.x);
     bool yOk = (m_walkToPos.y - POSTOLERANCE < m_position.y && m_walkToPos.y + POSTOLERANCE > m_position.y);
     
@@ -186,14 +186,14 @@ void Crew::update(float dt) {
         }
         m_position += gf::displacement(m_direction) * SPEED * dt;
     }
-    
+
     // update animation
     if (m_isWalking) {
       m_currentAnimation = &m_running[static_cast<int>(m_direction)];
     } else {
       m_currentAnimation = &m_static;
     }
-    
+
     m_currentAnimation->update(dt);
 }
 
