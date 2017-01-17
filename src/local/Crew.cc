@@ -20,6 +20,7 @@
 #include <gf/AnimatedSprite.h>
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
+#include <gf/VectorOps.h>
 
 #include "Singletons.h"
 

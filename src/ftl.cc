@@ -98,8 +98,8 @@ int main() {
         gf::Event event;
 
         while (window.pollEvent(event)) {
-            actions.update(event);
-            views.update(event);
+            actions.processEvent(event);
+            views.processEvent(event);
             switch(event.type) {
                 case gf::EventType::MouseButtonReleased:
                     if (event.mouseButton.button == gf::MouseButton::Left) {

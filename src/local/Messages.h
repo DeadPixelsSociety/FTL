@@ -20,6 +20,7 @@
 
 #include <gf/Message.h>
 
+using namespace gf::literals;
 
 struct LeftClicMouse : public gf::Message {
   static const gf::Id type = "LeftClicMouse"_id; // compile-time definition
