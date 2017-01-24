@@ -14,8 +14,8 @@ TO DO
 - [ ] Delete the PriorityQueue class?
 - [x] std::pair for Room* link
 - [x] Add sound support using SFML Lib
-- [ ] Add fire event
+- [x] Add fire event
     - [x] Fire propagation
     - [x] Render fire
-    - [ ] Game over fire
+    - [x] Game over fire
 

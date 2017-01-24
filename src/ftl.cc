@@ -61,11 +61,11 @@ int main() {
     closeWindowAction.addCloseControl();
     closeWindowAction.addKeycodeKeyControl(gf::Keycode::Escape);
     actions.addAction(closeWindowAction);
-    
+
     gf::Action muteMusic("Mute music");
     muteMusic.addKeycodeKeyControl(gf::Keycode::M);
     actions.addAction(muteMusic);
-    
+
     gf::Action volumeUpMusic("Volume up music");
     volumeUpMusic.addKeycodeKeyControl(gf::Keycode::NumpadPlus);
     actions.addAction(volumeUpMusic);
@@ -84,15 +84,14 @@ int main() {
 
     Score score;
     mainEntities.addEntity(score);
-    
+
     sf::Music* backgroundMusic = &gResourceManager().getMusic("music/ObservingTheStar-Redit.ogg");
     backgroundMusic->play();
     backgroundMusic->setLoop(true);
 
-    // no window.isFullscreen() maybe another method ?
-    bool fullscreen=false;
-
     gf::Clock clock;
+
+    window.setFullscreen(true);
     while (window.isOpen()) {
         // input
         gf::Event event;
@@ -119,18 +118,17 @@ int main() {
         }
 
         if (fullscreenAction.isActive()) {
-            window.setFullscreen(!fullscreen);
-            fullscreen=!fullscreen;
+            window.toggleFullscreen();
         }
 
         if (closeWindowAction.isActive()) {
             window.close();
         }
-        
+
         if (muteMusic.isActive()) {
             backgroundMusic->getStatus() == sf::Music::Playing ? backgroundMusic->pause() : backgroundMusic->play();
         }
-    
+
         if (volumeUpMusic.isActive()) {
             backgroundMusic->setVolume(backgroundMusic->getVolume() + 10.0f);
         }
