@@ -26,7 +26,8 @@
 
 Score::Score()
 : m_score(0.0f)
-, m_font(gResourceManager().getFont("jupiter.ttf")) {
+, m_font(gResourceManager().getFont("jupiter.ttf"))
+, m_isGameOver(false) {
     gMessageManager().registerHandler<GameOver>(&Score::onGameOver, this);
 }
 
@@ -36,8 +37,14 @@ void Score::update(float dt) {
 
 void Score::render(gf::RenderTarget &target) {
     gf::Text text("Score: " + std::to_string(static_cast<unsigned>(std::round(m_score))), m_font);
-    text.setPosition({0.0f, 0.0f});
     text.setColor(gf::Color::White);
+    if (m_isGameOver) {
+        text.setAnchor(gf::Anchor::Center);
+        text.setPosition({GAME_WIDTH / 2, GAME_HEIGHT / 2});
+        text.setScale(2.5f);
+    } else {
+        text.setPosition({0.0f, 0.0f});
+    }
     target.draw(text);
 }
 
@@ -45,7 +52,8 @@ gf::MessageStatus Score::onGameOver(gf::Id type, gf::Message *msg) {
     UNUSED(msg);
     assert(type == GameOver::type);
     
-    m_score = 0.0;
+    m_isGameOver = true;
+    // m_score = 0.0;
     
     return gf::MessageStatus::Keep;
 }

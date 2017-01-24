@@ -8,7 +8,7 @@ TO DO
 - [x] Create the score system
 - [x] Handle score with the GameOver event
 - [ ] Make a Menu screen
-- [ ] Make an end screen with score etc...
+- [x] Make an end screen with score etc...
 - [ ] Update the to do list ;)
 - [x] Fix pathfinding issue
 - [ ] Delete the PriorityQueue class?
@@ -16,6 +16,6 @@ TO DO
 - [x] Add sound support using SFML Lib
 - [ ] Add fire event
     - [x] Fire propagation
-    - [ ] Render fire
+    - [x] Render fire
     - [ ] Game over fire
 

@@ -31,8 +31,11 @@ public:
     
     gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
     
+    bool isGameOver() { return m_isGameOver; }
+    
 private:
     double m_score;
+    bool m_isGameOver;
     gf::Font &m_font;
 };
 

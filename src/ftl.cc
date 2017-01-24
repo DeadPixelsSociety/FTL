@@ -141,12 +141,18 @@ int main() {
 
         // update
         auto dt = clock.restart().asSeconds();
-        mainEntities.update(dt);
+        if (!score.isGameOver()) {
+            mainEntities.update(dt);
+        }
 
         // render
         renderer.clear();
         renderer.setView(shipView);
-        mainEntities.render(renderer);
+        if (!score.isGameOver()) {
+            mainEntities.render(renderer);
+        } else {
+            score.render(renderer);
+        }
         renderer.display();
 
         actions.reset();
