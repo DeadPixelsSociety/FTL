@@ -61,7 +61,7 @@ public:
     gf::MessageStatus onLeftClicMouse(gf::Id type, gf::Message *msg);
     gf::MessageStatus onRightClicMouse(gf::Id type, gf::Message *msg);
     gf::MessageStatus onRoomFailure(gf::Id type, gf::Message *msg);
-    gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onResetGame(gf::Id type, gf::Message *msg);
     gf::MessageStatus onFire(gf::Id type, gf::Message *msg);
 
 private:

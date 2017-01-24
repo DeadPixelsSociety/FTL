@@ -77,6 +77,10 @@ int main() {
     gf::Action fullscreenAction("Fullscreen");
     fullscreenAction.addKeycodeKeyControl(gf::Keycode::F);
     actions.addAction(fullscreenAction);
+    
+    gf::Action resetAction("Reset");
+    resetAction.addKeycodeKeyControl(gf::Keycode::R);
+    actions.addAction(resetAction);
 
     gf::EntityContainer mainEntities;
     Ship ship;
@@ -137,6 +141,11 @@ int main() {
 
         if (volumeDownMusic.isActive()) {
             backgroundMusic->setVolume(backgroundMusic->getVolume() - 10.0f);
+        }
+        
+        if (resetAction.isActive()) {
+            ResetGame message;
+            gMessageManager().sendMessage(&message);
         }
 
         // update
