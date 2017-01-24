@@ -43,4 +43,8 @@ struct GameOver : public gf::Message {
   static const gf::Id type = "GameOver"_id; // compile-time definition
 };
 
+struct ResetGame : public gf::Message {
+    static const gf::Id type = "ResetGame"_id;
+};
+
 #endif // LOCAL_MESSAGES_H

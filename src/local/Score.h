@@ -21,6 +21,7 @@
 #include <gf/Entity.h>
 #include <gf/Font.h>
 #include <gf/Message.h>
+#include <gf/MessageManager.h>
 
 class Score: public gf::Entity {
 public:
@@ -30,6 +31,7 @@ public:
     virtual void render(gf::RenderTarget &target) override;
     
     gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onResetGame(gf::Id type, gf::Message *msg);
     
     bool isGameOver() { return m_isGameOver; }
     

@@ -35,7 +35,7 @@ Ship::Ship()
     gMessageManager().registerHandler<LeftClicMouse>(&Ship::onLeftClicMouse, this);
     gMessageManager().registerHandler<RightClicMouse>(&Ship::onRightClicMouse, this);
     gMessageManager().registerHandler<RoomFailure>(&Ship::onRoomFailure, this);
-    gMessageManager().registerHandler<GameOver>(&Ship::onGameOver, this);
+    gMessageManager().registerHandler<ResetGame>(&Ship::onResetGame, this);
     gMessageManager().registerHandler<Fire>(&Ship::onFire, this);
     generateLevel();
 }
@@ -151,9 +151,9 @@ gf::MessageStatus Ship::onRoomFailure(gf::Id type, gf::Message *msg){
     return gf::MessageStatus::Keep;
 }
 
-gf::MessageStatus Ship::onGameOver(gf::Id type, gf::Message *msg) {
+gf::MessageStatus Ship::onResetGame(gf::Id type, gf::Message *msg) {
     UNUSED(msg);
-    assert(type == GameOver::type);
+    assert(type == ResetGame::type);
 
     m_rooms.clear();
     m_crew.clear();
