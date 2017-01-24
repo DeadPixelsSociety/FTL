@@ -163,7 +163,7 @@ void Room::update(float dt) {
         }
         for (auto it = m_linkedRoom.begin(); it != m_linkedRoom.end(); ++it) {
             Room *currentRoom = it->first;
-            if (currentRoom->isInFire()) {
+            if (currentRoom->isInFire() && !currentRoom->hasCrew()) {
                 factor += FIRE_FACTOR;
             }
         }

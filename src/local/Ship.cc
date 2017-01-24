@@ -65,7 +65,7 @@ void Ship::update(float dt) {
 
 
         float rand = gRandom().computeUniformFloat(0.0f, 100.0f);
-        if (rand <= 200.0f) {
+        if (rand <= 20.0f) {
             Fire message;
             gMessageManager().sendMessage(&message);
         }
@@ -186,6 +186,7 @@ gf::MessageStatus Ship::onFire(gf::Id type, gf::Message *msg) {
         random = gRandom().computeUniformInteger<unsigned>(0, m_rooms.size() - 1);
     }
 
+    random = 4;
     gf::Log::debug(gf::Log::General, "Room fire %d\n", random);
     m_rooms[random].fire();
 
