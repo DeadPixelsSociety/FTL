@@ -18,6 +18,7 @@ TO DO
     - [x] Fire propagation
     - [x] Render fire
     - [x] Game over fire
-- [ ] Add a HUD
-  - [ ] To the score
-  - [ ] To the Warning Message
+- [x] Add a HUD
+  - [x] To the score
+  - [x] To the Warning Message
+  - [ ] Remove old alert

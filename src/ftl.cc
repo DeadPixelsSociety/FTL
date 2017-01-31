@@ -17,6 +17,7 @@
 
 #include <gf/Action.h>
 #include <gf/Clock.h>
+#include <gf/Color.h>
 #include <gf/EntityContainer.h>
 #include <gf/Event.h>
 #include <gf/Log.h>
@@ -96,6 +97,7 @@ int main() {
     gf::Clock clock;
 
     window.setFullscreen(true);
+    renderer.clear(gf::Color::Black);
     while (window.isOpen()) {
         // input
         gf::Event event;

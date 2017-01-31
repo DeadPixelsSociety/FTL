@@ -23,16 +23,16 @@
 using namespace gf::literals;
 
 struct LeftClicMouse : public gf::Message {
-  static const gf::Id type = "LeftClicMouse"_id; // compile-time definition
-  gf::Vector2f position;
+    static const gf::Id type = "LeftClicMouse"_id; // compile-time definition
+    gf::Vector2f position;
 };
 
 struct RightClicMouse : public gf::Message {
-  static const gf::Id type = "RightClicMouse"_id; // compile-time definition
+    static const gf::Id type = "RightClicMouse"_id; // compile-time definition
 };
 
 struct RoomFailure : public gf::Message {
-  static const gf::Id type = "RoomFailure"_id; // compile-time definition
+    static const gf::Id type = "RoomFailure"_id; // compile-time definition
 };
 
 struct Fire : public gf::Message {
@@ -40,11 +40,16 @@ struct Fire : public gf::Message {
 };
 
 struct GameOver : public gf::Message {
-  static const gf::Id type = "GameOver"_id; // compile-time definition
+    static const gf::Id type = "GameOver"_id; // compile-time definition
 };
 
 struct ResetGame : public gf::Message {
     static const gf::Id type = "ResetGame"_id;
+};
+
+struct AlertThrow : public gf::Message {
+    static const gf::Id type = "AlertThrow"_id; // compile-time definition
+    std::string message;
 };
 
 #endif // LOCAL_MESSAGES_H

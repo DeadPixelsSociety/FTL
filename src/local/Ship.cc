@@ -68,10 +68,16 @@ void Ship::update(float dt) {
         if (rand <= 20.0f) {
             Fire message;
             gMessageManager().sendMessage(&message);
+            AlertThrow alert;
+            alert.message = "A fire started!";
+            gMessageManager().sendMessage(&alert);
         }
         else {
             RoomFailure message;
             gMessageManager().sendMessage(&message);
+            AlertThrow alert;
+            alert.message = "A room is broken!";
+            gMessageManager().sendMessage(&alert);
         }
     }
 }

@@ -18,6 +18,9 @@
 #ifndef LOCAL_HEAD_UP_DISPLAY_H
 #define LOCAL_HEAD_UP_DISPLAY_H
 
+#include <list>
+#include <utility>
+
 #include <gf/Entity.h>
 #include <gf/Font.h>
 #include <gf/Message.h>
@@ -32,6 +35,7 @@ public:
 
     gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
     gf::MessageStatus onResetGame(gf::Id type, gf::Message *msg);
+    gf::MessageStatus onAlertThrow(gf::Id type, gf::Message *msg);
 
     bool isGameOver() { return m_isGameOver; }
 
@@ -39,6 +43,7 @@ private:
     double m_score;
     bool m_isGameOver;
     gf::Font &m_font;
+    std::list< std::pair<std::string, float> > m_alerts;
 };
 
 #endif // LOCAL_HEAD_UP_DISPLAY_H
