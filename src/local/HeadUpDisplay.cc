@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>
 
-#include "Score.h"
+#include "HeadUpDisplay.h"
 
 #include <gf/RenderTarget.h>
 #include <gf/Text.h>
@@ -24,19 +24,19 @@
 #include "Messages.h"
 #include "Params.h"
 
-Score::Score()
+HeadUpDisplay::HeadUpDisplay()
 : m_score(0.0f)
 , m_isGameOver(false)
 , m_font(gResourceManager().getFont("jupiter.ttf")) {
-    gMessageManager().registerHandler<GameOver>(&Score::onGameOver, this);
-    gMessageManager().registerHandler<ResetGame>(&Score::onResetGame, this);
+    gMessageManager().registerHandler<GameOver>(&HeadUpDisplay::onGameOver, this);
+    gMessageManager().registerHandler<ResetGame>(&HeadUpDisplay::onResetGame, this);
 }
 
-void Score::update(float dt) {
+void HeadUpDisplay::update(float dt) {
     m_score += dt;
 }
 
-void Score::render(gf::RenderTarget &target) {
+void HeadUpDisplay::render(gf::RenderTarget &target) {
     gf::Text text("Score: " + std::to_string(static_cast<unsigned>(std::round(m_score))), m_font);
     text.setColor(gf::Color::White);
     if (m_isGameOver) {
@@ -50,21 +50,21 @@ void Score::render(gf::RenderTarget &target) {
     target.draw(text);
 }
 
-gf::MessageStatus Score::onGameOver(gf::Id type, gf::Message *msg) {
+gf::MessageStatus HeadUpDisplay::onGameOver(gf::Id type, gf::Message *msg) {
     UNUSED(msg);
     assert(type == GameOver::type);
-    
+
     m_isGameOver = true;
-    
+
     return gf::MessageStatus::Keep;
 }
 
-gf::MessageStatus Score::onResetGame(gf::Id type, gf::Message *msg) {
+gf::MessageStatus HeadUpDisplay::onResetGame(gf::Id type, gf::Message *msg) {
     UNUSED(msg);
     assert(type == ResetGame::type);
-    
+
     m_score = 0.0;
     m_isGameOver = false;
-    
+
     return gf::MessageStatus::Keep;
 }

@@ -27,7 +27,7 @@
 
 #include "local/Messages.h"
 #include "local/Params.h"
-#include "local/Score.h"
+#include "local/HeadUpDisplay.h"
 #include "local/Ship.h"
 #include "local/Singletons.h"
 #include "ResourceManager.h"
@@ -77,7 +77,7 @@ int main() {
     gf::Action fullscreenAction("Fullscreen");
     fullscreenAction.addKeycodeKeyControl(gf::Keycode::F);
     actions.addAction(fullscreenAction);
-    
+
     gf::Action resetAction("Reset");
     resetAction.addKeycodeKeyControl(gf::Keycode::R);
     actions.addAction(resetAction);
@@ -86,8 +86,8 @@ int main() {
     Ship ship;
     mainEntities.addEntity(ship);
 
-    Score score;
-    mainEntities.addEntity(score);
+    HeadUpDisplay hud;
+    mainEntities.addEntity(hud);
 
     sf::Music* backgroundMusic = &gResourceManager().getMusic("music/ObservingTheStar-Redit.ogg");
     backgroundMusic->play();
@@ -140,7 +140,7 @@ int main() {
         if (volumeDownMusic.isActive()) {
             backgroundMusic->setVolume(backgroundMusic->getVolume() - 10.0f);
         }
-        
+
         if (resetAction.isActive()) {
             ResetGame message;
             gMessageManager().sendMessage(&message);
@@ -148,17 +148,17 @@ int main() {
 
         // update
         auto dt = clock.restart().asSeconds();
-        if (!score.isGameOver()) {
+        if (!hud.isGameOver()) {
             mainEntities.update(dt);
         }
 
         // render
         renderer.clear();
         renderer.setView(shipView);
-        if (!score.isGameOver()) {
+        if (!hud.isGameOver()) {
             mainEntities.render(renderer);
         } else {
-            score.render(renderer);
+            hud.render(renderer);
         }
         renderer.display();
 

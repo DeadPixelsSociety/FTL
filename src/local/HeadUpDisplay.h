@@ -15,30 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>
 
-#ifndef LOCAL_SCORE_H
-#define LOCAL_SCORE_H
+#ifndef LOCAL_HEAD_UP_DISPLAY_H
+#define LOCAL_HEAD_UP_DISPLAY_H
 
 #include <gf/Entity.h>
 #include <gf/Font.h>
 #include <gf/Message.h>
 #include <gf/MessageManager.h>
 
-class Score: public gf::Entity {
+class HeadUpDisplay: public gf::Entity {
 public:
-    Score();
+    HeadUpDisplay();
 
     virtual void update(float dt) override;
     virtual void render(gf::RenderTarget &target) override;
-    
+
     gf::MessageStatus onGameOver(gf::Id type, gf::Message *msg);
     gf::MessageStatus onResetGame(gf::Id type, gf::Message *msg);
-    
+
     bool isGameOver() { return m_isGameOver; }
-    
+
 private:
     double m_score;
     bool m_isGameOver;
     gf::Font &m_font;
 };
 
-#endif // LOCAL_SCORE_H
+#endif // LOCAL_HEAD_UP_DISPLAY_H
