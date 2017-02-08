@@ -238,48 +238,54 @@ void Ship::generateLevel() {
 }
 
 std::vector<Room *> Ship::findPath(Room* startRoom, Room* endRoom) {
-    //////////////////
-    // A* Algorithm //
-    //////////////////
-    std::unordered_map<Room*, Room*> cameFrom;
-    std::unordered_map<Room*, double> costSoFar;
-    PriorityQueue<Room*, double> frontier;
-    frontier.put(startRoom, 0);
-    cameFrom[startRoom] = startRoom;
-    costSoFar[startRoom] = 0;
+    // some variable needed;
+    // path : a vector of the path
+    // done : room that we already visited, as we start at the startroom we add it first.
+    // current : the current visiting room, the first room to be visited is the start room.
+    // bestWay : a handle to the best room to go.
+    std::vector<Room*> path;
+    std::vector<Room*> done;
+    path.push_back(startRoom);
+    done.push_back(startRoom);
+    Room* current = startRoom;
+    Room* bestWay;
 
-    while(!frontier.empty()) {
-        Room* current = frontier.get();
-        if (current == endRoom) {
-            break;
-        }
-        for (auto next : current->getLinkedRoom()) {
-            double newCost = costSoFar[current] + next.second.first;
-            if (!costSoFar.count(next.first) || newCost < costSoFar[next.first]) {
-                costSoFar[next.first] = newCost;
-                double priority = newCost + heuristic(next.first->getPos(), endRoom->getPos());
-                frontier.put(next.first, priority);
-                cameFrom[next.first] = current;
+    // we are looping throught our rooms until we are at the end.
+    while (current != endRoom)
+    {
+        // Compute the first best cost from our linked rooms to the end.
+        double bestCost = current->getLinkedRoom().begin()->second.first + heuristic(current->getLinkedRoom().begin()->first->getPos(), endRoom->getPos());
+        // then we handle that the best way is the first room of our linked rooms
+        bestWay = current->getLinkedRoom().begin()->first;
+        // Loop throught all the linked rooms
+        for(auto linkedRoom : current->getLinkedRoom())
+        {
+            // We search our current linked room in the visited room
+            auto it = std::find(done.begin(), done.end(), linkedRoom.first);
+            // we check that our current linked room isn't already visited
+            if (it == done.end())
+            {
+                // we check that the new cost from this linked room to the end is cheaper than our current best cost;
+                if (linkedRoom.second.first + heuristic(linkedRoom.first->getPos(), endRoom->getPos()) < bestCost)
+                {
+                    // if it is cheaper, we set the new best way to the current linked room
+                    bestCost = linkedRoom.second.first + heuristic(linkedRoom.first->getPos(), endRoom->getPos());
+                    bestWay = linkedRoom.first;
+                }
+                // Add the current room to the visited rooms
+                done.push_back(linkedRoom.first);
             }
         }
+        // We found the best linked room to go to the end so we add it to the path
+        path.push_back(bestWay);
+        current = bestWay;
     }
-    /////////////////////////
-    // End of A* algorithm //
-    /////////////////////////
 
-    //////////////////////////////////
-    // Rebuild the path
-    // Convert the path for crew.
-    //////////////////////////////////
-    std::vector<Room*> roomPath;
-    Room* current = endRoom;
+    // We have the path in our vector going from end to begin
+    // so we reverse the path for the crew to go from the begin to the end
+    // and we remove the start room because the crew is already in the start room.
+    std::reverse(path.begin(), path.end());
+    path.pop_back();
 
-    roomPath.push_back(current);
-    while (current != startRoom) {
-        current = cameFrom[current];
-        roomPath.push_back(current);
-    }
-    roomPath.pop_back();
-
-    return roomPath;
+    return path;
 }
