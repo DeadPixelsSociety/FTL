@@ -23,6 +23,7 @@
 #include <gf/Entity.h>
 #include <gf/EntityContainer.h>
 #include <gf/Message.h>
+#include <gf/Texture.h>
 #include <gf/Vector.h>
 
 #include "Crew.h"
@@ -51,6 +52,9 @@ private:
 
 private:
     float m_timeElapsed;
+
+    gf::Texture& m_shipTexture;
+    gf::Texture& m_backgroundTexture;
 
     std::vector<Room> m_rooms;
     std::vector<Crew> m_crew;

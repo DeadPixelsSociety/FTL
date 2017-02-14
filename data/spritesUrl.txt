@@ -9,3 +9,9 @@ http://opengameart.org/content/another-space-background-track
 
 Fire:
 https://openclipart.org/detail/225457/flamespritesheet02
+
+Ship:
+http://opengameart.org/content/spaceship-4
+
+Stars:
+http://opengameart.org/content/space-backgrounds-3

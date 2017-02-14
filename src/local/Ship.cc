@@ -19,7 +19,8 @@
 
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
-#include <unordered_map>
+#include <gf/Sprite.h>
+#include <gf/VectorOps.h>
 
 #include "Messages.h"
 #include "Params.h"
@@ -31,6 +32,8 @@ float heuristic(gf::Vector2f a, gf::Vector2f b) {
 
 Ship::Ship()
 : m_timeElapsed(0.0f)
+, m_shipTexture(gResourceManager().getTexture("ship.png"))
+, m_backgroundTexture(gResourceManager().getTexture("stars.png"))
 , m_crewToMove(nullptr) {
     gMessageManager().registerHandler<LeftClicMouse>(&Ship::onLeftClicMouse, this);
     gMessageManager().registerHandler<RightClicMouse>(&Ship::onRightClicMouse, this);
@@ -83,6 +86,19 @@ void Ship::update(float dt) {
 }
 
 void Ship::render(gf::RenderTarget &target) {
+    gf::Sprite sprite;
+    sprite.setTexture(m_backgroundTexture);
+    sprite.setPosition({ GAME_WIDTH / 2, GAME_HEIGHT / 2 });
+    sprite.setAnchor(gf::Anchor::Center);
+    target.draw(sprite);
+
+    sprite.setTexture(m_shipTexture);
+    sprite.setPosition({ GAME_WIDTH / 2, GAME_HEIGHT / 2 });
+    sprite.setScale(5.0f);
+    sprite.setAnchor(gf::Anchor::Center);
+    sprite.rotate(gf::Pi2);
+    target.draw(sprite);
+
     for(Room &room: m_rooms) {
         room.render(target);
     }
