@@ -38,9 +38,19 @@ HeadUpDisplay::HeadUpDisplay()
 
 void HeadUpDisplay::update(float dt) {
     m_score += dt;
+
+    // Update the time elapsed
     for (auto &pair: m_alerts) {
         pair.second += dt;
     }
+
+    // Remove old alert
+    m_alerts.erase(std::remove_if(m_alerts.begin(),
+                              m_alerts.end(),
+                              [](std::pair<std::string, float> alert){
+                                return alert.second >= COOLDOWN_ALERT;
+                            }),
+               m_alerts.end());
 }
 
 void HeadUpDisplay::render(gf::RenderTarget &target) {

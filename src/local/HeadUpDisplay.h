@@ -18,8 +18,8 @@
 #ifndef LOCAL_HEAD_UP_DISPLAY_H
 #define LOCAL_HEAD_UP_DISPLAY_H
 
-#include <list>
 #include <utility>
+#include <vector>
 
 #include <gf/Entity.h>
 #include <gf/Font.h>
