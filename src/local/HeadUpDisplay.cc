@@ -25,7 +25,7 @@
 #include "Messages.h"
 #include "Params.h"
 
-static constexpr float COOLDOWN_ALERT = 2.0f;
+static constexpr float COOLDOWN_ALERT = 4.0f;
 
 HeadUpDisplay::HeadUpDisplay()
 : m_score(0.0f)
@@ -76,6 +76,11 @@ void HeadUpDisplay::render(gf::RenderTarget &target) {
     for (auto &pair: m_alerts) {
         if (pair.second < COOLDOWN_ALERT) {
             text.setString(pair.first);
+
+            // Set the alpha
+            float alpha = (COOLDOWN_ALERT - pair.second) / (COOLDOWN_ALERT * 0.5f);
+            gf::Log::print("%f\n", alpha);
+            text.setColor({ 1.0f, 1.0f, 1.0f, alpha});
             text.setPosition({GAME_WIDTH * 0.99f, GAME_HEIGHT * 0.01f + heightOffset});
             text.setAnchor(gf::Anchor::CenterRight);
             target.draw(text);
