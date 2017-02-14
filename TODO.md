@@ -11,7 +11,7 @@ TO DO
 - [x] Make an end screen with score etc...
 - [ ] Update the to do list ;)
 - [x] Fix pathfinding issue
-- [ ] Delete the PriorityQueue class?
+- [x] Delete the PriorityQueue class?
 - [x] std::pair for Room* link
 - [x] Add sound support using SFML Lib
 - [x] Add fire event
@@ -21,4 +21,5 @@ TO DO
 - [x] Add a HUD
   - [x] To the score
   - [x] To the Warning Message
-  - [ ] Remove old alert
+  - [x] Remove old alert
+- [ ] Add boarding
