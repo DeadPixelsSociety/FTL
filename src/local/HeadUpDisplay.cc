@@ -25,7 +25,7 @@
 #include "Messages.h"
 #include "Params.h"
 
-static constexpr float COOLDOWN_ALERT = 2.0f;
+static constexpr float COOLDOWN_ALERT = 4.0f;
 
 HeadUpDisplay::HeadUpDisplay()
 : m_score(0.0f)
@@ -38,9 +38,19 @@ HeadUpDisplay::HeadUpDisplay()
 
 void HeadUpDisplay::update(float dt) {
     m_score += dt;
+
+    // Update the time elapsed
     for (auto &pair: m_alerts) {
         pair.second += dt;
     }
+
+    // Remove old alert
+    m_alerts.erase(std::remove_if(m_alerts.begin(),
+                              m_alerts.end(),
+                              [](std::pair<std::string, float> alert){
+                                return alert.second >= COOLDOWN_ALERT;
+                            }),
+               m_alerts.end());
 }
 
 void HeadUpDisplay::render(gf::RenderTarget &target) {
@@ -66,6 +76,11 @@ void HeadUpDisplay::render(gf::RenderTarget &target) {
     for (auto &pair: m_alerts) {
         if (pair.second < COOLDOWN_ALERT) {
             text.setString(pair.first);
+
+            // Set the alpha
+            float alpha = (COOLDOWN_ALERT - pair.second) / (COOLDOWN_ALERT * 0.5f);
+            gf::Log::print("%f\n", alpha);
+            text.setColor({ 1.0f, 1.0f, 1.0f, alpha});
             text.setPosition({GAME_WIDTH * 0.99f, GAME_HEIGHT * 0.01f + heightOffset});
             text.setAnchor(gf::Anchor::CenterRight);
             target.draw(text);
