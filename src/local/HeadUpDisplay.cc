@@ -86,6 +86,8 @@ void HeadUpDisplay::render(gf::RenderTarget &target) {
             // Set the alpha
             float alpha = (COOLDOWN_ALERT - pair.second) / (COOLDOWN_ALERT * 0.5f);
             text.setColor({ 1.0f, 1.0f, 1.0f, alpha});
+            text.setOutlineThickness(2.0f);
+            text.setOutlineColor(gf::Color::Black);
             text.setPosition({GAME_WIDTH * 0.99f, GAME_HEIGHT * 0.01f + heightOffset});
             text.setAnchor(gf::Anchor::TopRight);
             target.draw(text);
