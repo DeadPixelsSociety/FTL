@@ -30,10 +30,14 @@ static constexpr float COOLDOWN_ALERT = 4.0f;
 HeadUpDisplay::HeadUpDisplay()
 : m_score(0.0f)
 , m_isGameOver(false)
-, m_font(gResourceManager().getFont("jupiter.ttf")) {
+, m_font(gResourceManager().getFont("jupiter.ttf"))
+, m_hudView() {
     gMessageManager().registerHandler<GameOver>(&HeadUpDisplay::onGameOver, this);
     gMessageManager().registerHandler<ResetGame>(&HeadUpDisplay::onResetGame, this);
     gMessageManager().registerHandler<AlertThrow>(&HeadUpDisplay::onAlertThrow, this);
+
+    m_hudView.setSize({ (float)GAME_WIDTH, (float)GAME_HEIGHT });
+    m_hudView.setCenter({ GAME_WIDTH/2.0f, GAME_HEIGHT/2.0f });
 }
 
 void HeadUpDisplay::update(float dt) {
@@ -54,6 +58,8 @@ void HeadUpDisplay::update(float dt) {
 }
 
 void HeadUpDisplay::render(gf::RenderTarget &target) {
+    target.setView(m_hudView);
+
     gf::Text text("Score: " + std::to_string(static_cast<unsigned>(std::round(m_score))), m_font);
     text.setColor(gf::Color::White);
 
@@ -65,8 +71,8 @@ void HeadUpDisplay::render(gf::RenderTarget &target) {
         target.draw(text);
         return;
     } else {
+        text.setAnchor(gf::Anchor::TopLeft);
         text.setPosition({GAME_WIDTH * 0.01f, GAME_HEIGHT * 0.01f});
-        text.setAnchor(gf::Anchor::CenterLeft);
     }
 
     target.draw(text);
@@ -81,7 +87,7 @@ void HeadUpDisplay::render(gf::RenderTarget &target) {
             float alpha = (COOLDOWN_ALERT - pair.second) / (COOLDOWN_ALERT * 0.5f);
             text.setColor({ 1.0f, 1.0f, 1.0f, alpha});
             text.setPosition({GAME_WIDTH * 0.99f, GAME_HEIGHT * 0.01f + heightOffset});
-            text.setAnchor(gf::Anchor::CenterRight);
+            text.setAnchor(gf::Anchor::TopRight);
             target.draw(text);
 
             heightOffset += text.getLocalBounds().height + 5.0f;

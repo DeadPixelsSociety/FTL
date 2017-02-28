@@ -25,6 +25,7 @@
 #include <gf/Font.h>
 #include <gf/Message.h>
 #include <gf/MessageManager.h>
+#include <gf/Views.h>
 
 class HeadUpDisplay: public gf::Entity {
 public:
@@ -44,6 +45,8 @@ private:
     bool m_isGameOver;
     gf::Font &m_font;
     std::list< std::pair<std::string, float> > m_alerts;
+
+    gf::ScreenView m_hudView;
 };
 
 #endif // LOCAL_HEAD_UP_DISPLAY_H
