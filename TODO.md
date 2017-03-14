@@ -1,7 +1,7 @@
 TO DO
 =====
 
-- [ ] Find and integrate a cool ship sprite
+- [x] Find and integrate a cool ship sprite
 - [x] Look for a better sprite of the crew
 - [ ] Add new events (message)
 - [ ] Change spriteURL.txt to be a Licence file for arts

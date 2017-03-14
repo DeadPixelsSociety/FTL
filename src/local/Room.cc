@@ -144,6 +144,7 @@ void Room::update(float dt) {
         m_timeRepair += dt;
         if (m_timeRepair >= COOLDOWN_REPAIR) {
             m_timeRepair = 0.0f;
+            m_timeFailure = 0.0f;
             m_failure = false;
             m_isRepairing = false;
         }
