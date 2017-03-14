@@ -26,7 +26,7 @@
 
 static constexpr float FRAMETIME = 0.2f;
 static constexpr float SPEED = 100.0f;
-static constexpr float POSTOLERANCE = 0.8f;
+static constexpr float POSTOLERANCE = 2.0f;
 
 static void loadSingleFrameAnimation(gf::Animation& animation, const gf::Path& path) {
     gf::Texture& texture = gResourceManager().getTexture(path);
