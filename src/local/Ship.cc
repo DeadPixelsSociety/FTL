@@ -207,8 +207,7 @@ gf::MessageStatus Ship::onFire(gf::Id type, gf::Message *msg) {
     while (m_rooms[random].hasCrew() || m_rooms[random].isInFire()) {
         random = gRandom().computeUniformInteger<unsigned>(0, m_rooms.size() - 1);
     }
-
-    random = 4;
+    
     gf::Log::debug(gf::Log::General, "Room fire %d\n", random);
     m_rooms[random].fire();
 
